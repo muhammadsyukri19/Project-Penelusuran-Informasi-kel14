@@ -6,13 +6,18 @@ def load_articles(path, source_name):
 
     articles = []
     for i, item in enumerate(data):
+        images = item.get("images") or []
+        # ambil 1 gambar utama (kalau ada)
+        main_image = images[0] if images else ""
+
         articles.append({
             "id": f"{source_name}_{i}",
             "source": source_name,
             "url": item.get("url", ""),
             "title": item.get("title", ""),
-            "published_at": item.get("published_at", ""),
-            "content": item.get("content", "")
+            "content": item.get("content", ""),
+            "images": images,          # simpan semua (opsional)
+            "main_image": main_image   # satu gambar utama
         })
     return articles
 
@@ -25,3 +30,5 @@ print(f"Total dokumen: {len(all_articles)}")
 
 with open("merge-all.json", "w", encoding="utf-8") as f:
     json.dump(all_articles, f, ensure_ascii=False, indent=2)
+
+print("[DONE] merge-all.json updated with images/main_image")

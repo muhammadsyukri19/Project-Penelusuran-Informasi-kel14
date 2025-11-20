@@ -1,118 +1,136 @@
 import json
 import re
 import sys
-
-from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
-# ---------------------------------------------------------
-# NOTE:
-# Sebelum menjalankan file ini, pastikan:
-# 1) pip install Sastrawi nltk
-# 2) Di Python shell:
-#       import nltk
-#       nltk.download('punkt')
-#       nltk.download('stopwords')
-# ---------------------------------------------------------
+# ==============================
+# CONFIG
+# ==============================
+INPUT_FILE = "merge-all.json"
+OUTPUT_FILE = "preprocessed.json"
 
-INPUT_FILE = "merge-all.json"      # nama file gabungan kamu
-OUTPUT_FILE = "preprocessed.json"  # output hasil preprocessing
+# Ubah ini ke 10 untuk testing
+LIMIT = 300       # ← ambil 10 dokumen saja
+# LIMIT = None   # ← kalau nanti mau full dataset
+
+# Pastikan paket NLTK sudah ada
+nltk.download('punkt')
+nltk.download('stopwords')
 
 
-def load_articles(path: str):
-    """Load artikel dari file JSON gabungan."""
+# ==============================
+# LOAD DATA
+# ==============================
+def load_articles(path):
     try:
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
-        print(f"[INFO] Berhasil load {len(data)} artikel dari {path}")
+
+        if LIMIT:
+            data = data[:LIMIT]
+
+        print(f"[INFO] Loaded {len(data)} articles from {path}")
         return data
+
     except FileNotFoundError:
-        print(f"[ERROR] File {path} tidak ditemukan. Pastikan namanya benar dan ada di folder yang sama.")
+        print(f"[ERROR] File {path} not found!")
         sys.exit(1)
 
 
-def setup_text_tools():
-    """Siapkan stemmer dan stopwords bahasa Indonesia."""
-    factory = StemmerFactory()
-    stemmer = factory.create_stemmer()
-
-    stop_words = set(stopwords.words("indonesian"))
-
-    # kata penting sepak bola yang TIDAK BOLEH dihapus
-    domain_keep = {
-        "gol", "goal", "assist", "penalti", "penalty",
-        "liga", "liga1", "liga", "super", "league",
-        "timnas", "u-23", "u23",
-        "persib", "persija", "arema", "persebaya",
-        "madura", "bali", "united", "psm", "psis"
-    }
-    # hapus kata-kata penting itu dari stopwords
-    stop_words = {w for w in stop_words if w not in domain_keep}
-
-    return stemmer, stop_words
-
-
+# ==============================
+# TEXT CLEANING
+# ==============================
 def clean_text(text: str) -> str:
-    """Bersihkan teks mentah menjadi lowercase + tanpa simbol aneh."""
     if not text:
         return ""
     text = text.lower()
-    # hapus tag HTML (jika ada)
+
+    # hapus HTML tags
     text = re.sub(r"<.*?>", " ", text)
-    # sisakan huruf, angka, spasi, dan tanda -
+
+    # hilangkan simbol kecuali huruf, angka, spasi, dan strip
     text = re.sub(r"[^a-z0-9\s\-]", " ", text)
-    # rapikan spasi berulang
+
+    # rapikan spasi
     text = re.sub(r"\s+", " ", text).strip()
+
     return text
 
 
-def preprocess_documents(articles, stemmer, stop_words):
-    """Lakukan cleaning, tokenisasi, stopword removal, dan stemming."""
+# ==============================
+# SETUP STOPWORDS & STEMMER
+# ==============================
+factory = StemmerFactory()
+stemmer = factory.create_stemmer()
+
+stop_words = set(stopwords.words("indonesian"))
+
+# Kata penting sepak bola agar tidak terhapus
+DOMAIN_KEEP = {
+    "gol", "goal", "assist", "penalti", "penalty",
+    "liga", "liga1", "league",
+    "timnas", "u23", "u-23",
+    "persib", "persija", "arema", "persebaya",
+    "madura", "bali", "united", "psis", "psm"
+}
+
+stop_words = {w for w in stop_words if w not in DOMAIN_KEEP}
+
+
+# ==============================
+# PREPROCESSING FUNCTION
+# ==============================
+def preprocess_documents(articles):
     processed_docs = []
 
     for art in articles:
-        # gabungkan judul + isi artikel
         raw_text = (art.get("title", "") or "") + " " + (art.get("content", "") or "")
         cleaned = clean_text(raw_text)
 
-        # tokenisasi
+        # tokenisasi dengan NLTK
         tokens = word_tokenize(cleaned)
 
-        # buang stopword & token super pendek
+        # buang stopword & token pendek
         tokens = [t for t in tokens if t not in stop_words and len(t) > 1]
 
-        # stemming
+        # stemming (Sastrawi)
         stemmed = [stemmer.stem(t) for t in tokens]
+
+        # ambil gambar (kalau ada)
+        images = art.get("images", [])
+        main_image = images[0] if images else ""
 
         processed_docs.append({
             "id": art.get("id", ""),
             "source": art.get("source", ""),
             "url": art.get("url", ""),
             "title": art.get("title", ""),
+            "main_image": main_image,
             "tokens": stemmed
         })
 
     return processed_docs
 
 
+# ==============================
+# MAIN PROCESS
+# ==============================
 def main():
-    # 1. Load data gabungan
     articles = load_articles(INPUT_FILE)
+    processed = preprocess_documents(articles)
 
-    # 2. Siapkan stemmer & stopwords
-    stemmer, stop_words = setup_text_tools()
+    print(f"[INFO] Total processed documents: {len(processed)}")
 
-    # 3. Preprocess semua dokumen
-    processed_docs = preprocess_documents(articles, stemmer, stop_words)
-
-    print(f"[INFO] Total dokumen setelah preprocessing: {len(processed_docs)}")
-
-    # 4. Simpan ke JSON
+    # Simpan sekali saja di luar loop
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        json.dump(processed_docs, f, ensure_ascii=False, indent=2)
+        json.dump(processed, f, ensure_ascii=False, indent=2)
 
-    print(f"[DONE] Hasil preprocessing disimpan ke: {OUTPUT_FILE}")
+    print(f"[DONE] Saved preprocessed data to {OUTPUT_FILE}")
+    print(f"[SAMPLE] Example document:")
+    print(processed[0])
 
 
 if __name__ == "__main__":
