@@ -1,6 +1,8 @@
 import json
 import re
 import time
+import os
+from datetime import datetime
 from urllib.parse import urljoin, urlparse
 
 import requests
@@ -12,6 +14,9 @@ from bs4 import BeautifulSoup
 SITEMAP_URL = "https://sports.sindonews.com/sitemap-news.xml"
 
 MAX_ITEMS = 1000  # target artikel yang mau diambil
+
+# File output
+OUTPUT_FILE = "sindonews_bola_indonesia.json"
 
 TITLE_SELECTORS = [
     ".detail__title",
@@ -419,31 +424,157 @@ def scrape_article(url):
     return item, None
 
 
+# ===================== FUNGSI APPEND & BACKUP =====================
+
+def load_existing_articles(filepath):
+    """Load artikel yang sudah ada dari file JSON"""
+    if os.path.exists(filepath):
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                print(f"\n📂 Data existing ditemukan: {len(data)} artikel")
+                return data
+        except Exception as e:
+            print(f"\n⚠️ Error membaca file existing: {e}")
+            return []
+    else:
+        print(f"\n📂 File {filepath} belum ada, akan dibuat baru")
+        return []
+
+
+def create_backup(filepath):
+    """Buat backup file existing sebelum update"""
+    if os.path.exists(filepath):
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_file = filepath.replace('.json', f'_backup_{timestamp}.json')
+        
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            with open(backup_file, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+            print(f"💾 Backup dibuat: {backup_file}")
+            return backup_file
+        except Exception as e:
+            print(f"⚠️ Gagal membuat backup: {e}")
+            return None
+    return None
+
+
+def save_with_append(new_articles, filepath, check_duplicate=True):
+    """
+    Simpan artikel baru dengan append ke data lama
+    
+    Args:
+        new_articles: List artikel baru hasil crawling
+        filepath: Path file JSON output
+        check_duplicate: Check duplikasi berdasarkan URL (default True)
+    
+    Returns:
+        Jumlah artikel baru yang ditambahkan
+    """
+    # Load data lama
+    existing_articles = load_existing_articles(filepath)
+    
+    # Buat backup sebelum update
+    if existing_articles:
+        create_backup(filepath)
+    
+    if check_duplicate:
+        # Buat set URL yang sudah ada
+        existing_urls = {article['url'] for article in existing_articles}
+        
+        # Filter artikel baru yang belum ada
+        unique_new = [
+            article for article in new_articles 
+            if article['url'] not in existing_urls
+        ]
+        
+        print(f"\n{'='*60}")
+        print(f"📊 RINGKASAN PENAMBAHAN DATA")
+        print(f"{'='*60}")
+        print(f"📋 Artikel lama: {len(existing_articles)}")
+        print(f"🆕 Artikel hasil crawl: {len(new_articles)}")
+        print(f"✅ Artikel baru (unik): {len(unique_new)}")
+        print(f"❌ Duplikat (dilewati): {len(new_articles) - len(unique_new)}")
+        print(f"{'='*60}")
+        
+        # Gabungkan
+        all_articles = existing_articles + unique_new
+        added_count = len(unique_new)
+    else:
+        all_articles = existing_articles + new_articles
+        added_count = len(new_articles)
+    
+    # Simpan data gabungan
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(all_articles, f, ensure_ascii=False, indent=2)
+    
+    print(f"\n✅ Total artikel sekarang: {len(all_articles)}")
+    print(f"📁 Disimpan di: {filepath}\n")
+    
+    return added_count
+
+
 # ===================== MAIN =====================
 
 def main():
+    print("\n" + "="*60)
+    print("🚀 MEMULAI CRAWLING SINDONEWS BOLA INDONESIA")
+    print("="*60)
+    print(f"🎯 Target: {MAX_ITEMS} artikel")
+    print(f"📂 Output: {OUTPUT_FILE}")
+    print("="*60 + "\n")
+    
+    # Ambil URL dari sitemap
     urls = get_urls_from_sitemap(SITEMAP_URL, MAX_ITEMS)
-    print(f"Total URL artikel hasil pengambilan dari sitemap: {len(urls)}")
+    print(f"\n✅ Total URL artikel dari sitemap: {len(urls)}")
+    
+    if not urls:
+        print("❌ Tidak ada URL yang ditemukan. Proses dihentikan.")
+        return
 
+    # Crawl artikel
+    print(f"\n{'='*60}")
+    print("📰 MEMULAI SCRAPING ARTIKEL")
+    print("="*60 + "\n")
+    
     results = []
+    success = 0
+    failed = 0
+    
     for i, u in enumerate(urls, 1):
         if not u.startswith("http"):
             u = urljoin(SITEMAP_URL, u)
 
-        print(f"[{i}/{len(urls)}] {u}")
+        print(f"[{i}/{len(urls)}] {u[:80]}...")
         item, err = scrape_article(u)
         if err:
-            print(f"  -> {err}, skipped")
+            print(f"  ❌ {err}")
+            failed += 1
         else:
             results.append(item)
-            print(f"  -> ok, {item['content_length']} chars")
+            print(f"  ✅ OK - {item['content_length']} chars")
+            success += 1
 
-        time.sleep(0.8)
+        time.sleep(0.8)  # Jeda untuk menghindari rate limit
 
-    with open("sindonews_bola_indonesia.json", "w", encoding="utf-8") as f:
-        json.dump(results, f, ensure_ascii=False, indent=2)
-
-    print(f"Saved {len(results)} items to sindonews_bola_indonesia.json")
+    # Simpan dengan append (tidak hapus data lama)
+    print(f"\n{'='*60}")
+    print("💾 MENYIMPAN HASIL")
+    print("="*60)
+    print(f"✅ Berhasil: {success} artikel")
+    print(f"❌ Gagal: {failed} artikel")
+    
+    if results:
+        added = save_with_append(results, OUTPUT_FILE, check_duplicate=True)
+        
+        print(f"\n{'='*60}")
+        print("🎉 CRAWLING SELESAI!")
+        print("="*60)
+        print(f"✨ Artikel baru ditambahkan: {added}")
+    else:
+        print("\n⚠️ Tidak ada artikel baru yang berhasil di-crawl")
 
 
 if __name__ == "__main__":

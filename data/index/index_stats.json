@@ -1,0 +1,197 @@
+{
+  "overview": {
+    "total_documents": 376,
+    "vocabulary_size": 6457,
+    "avg_terms_per_document": 338.52,
+    "total_index_entries": 69692
+  },
+  "term_statistics": {
+    "avg_documents_per_term": 10.79,
+    "max_documents_per_term": 323,
+    "min_documents_per_term": 1,
+    "most_common_terms": [
+      {
+        "term": "jadi",
+        "doc_count": 323
+      },
+      {
+        "term": "laga",
+        "doc_count": 319
+      },
+      {
+        "term": "tanding",
+        "doc_count": 319
+      },
+      {
+        "term": "main",
+        "doc_count": 316
+      },
+      {
+        "term": "tim",
+        "doc_count": 312
+      },
+      {
+        "term": "latih",
+        "doc_count": 286
+      },
+      {
+        "term": "sebut",
+        "doc_count": 280
+      },
+      {
+        "term": "hasil",
+        "doc_count": 265
+      },
+      {
+        "term": "2025",
+        "doc_count": 264
+      },
+      {
+        "term": "indonesia",
+        "doc_count": 257
+      },
+      {
+        "term": "wib",
+        "doc_count": 255
+      },
+      {
+        "term": "menang",
+        "doc_count": 252
+      },
+      {
+        "term": "akhir",
+        "doc_count": 251
+      },
+      {
+        "term": "lawan",
+        "doc_count": 250
+      },
+      {
+        "term": "vs",
+        "doc_count": 232
+      },
+      {
+        "term": "timnas",
+        "doc_count": 225
+      },
+      {
+        "term": "lanjut",
+        "doc_count": 221
+      },
+      {
+        "term": "stadion",
+        "doc_count": 220
+      },
+      {
+        "term": "lebih",
+        "doc_count": 219
+      },
+      {
+        "term": "gol",
+        "doc_count": 211
+      }
+    ]
+  },
+  "document_statistics": {
+    "avg_document_length": 338.52,
+    "max_document_length": 656,
+    "min_document_length": 154,
+    "source_distribution": {
+      "bolanet": 150,
+      "kompas": 124,
+      "sindonews": 102
+    }
+  },
+  "tfidf_statistics": {
+    "avg_tfidf_score": 4.193786,
+    "max_tfidf_score": 24.373232,
+    "top_discriminative_terms": [
+      {
+        "term": "2337",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "sulap",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "sihir",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "saliba",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "loyal",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "sisip",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "cody",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "gakpo",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "ethan",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "nwaneri",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "eksesl",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "istri",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "wojciech",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "szczesny",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "2031",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "adaptif",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "2311",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "terjemah",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "gelombang",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "2250",
+        "idf_score": 6.2391
+      }
+    ]
+  },
+  "metadata": {
+    "total_documents": 376,
+    "vocab_size": 6457,
+    "sublinear_tf": true,
+    "smooth_idf": true
+  }
+}

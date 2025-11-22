@@ -21,9 +21,9 @@ def load_articles(path, source_name):
         })
     return articles
 
-bolanet = load_articles("data/bolanet_bola_indonesia.json", "bolanet")
-kompas = load_articles("data/kompas_bola_indonesia.json", "kompas")
-sindonews = load_articles("data/sindonews_bola_indonesia.json", "sindonews")
+bolanet = load_articles("bolanet_bola_indonesia.json", "bolanet")
+kompas = load_articles("kompas_bola_indonesia.json", "kompas")
+sindonews = load_articles("sindonews_bola_indonesia.json", "sindonews")
 
 all_articles = bolanet + kompas + sindonews
 print(f"Total dokumen: {len(all_articles)}")
