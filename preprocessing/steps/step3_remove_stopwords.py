@@ -55,36 +55,46 @@ def main():
     df = pd.read_csv(STEP2_OUTPUT, encoding='utf-8')
     print(f"✅ Loaded {len(df)} articles\n")
     
-    for col in TEXT_COLUMNS:
-        step2_col = f'{col}_step2'
-        if step2_col not in df.columns:
-            continue
-        
-        print(f"🔄 Processing: {step2_col}")
-        
-        # Calculate stats before
-        before_words = df[step2_col].str.split().str.len().mean()
-        
-        # Remove stopwords
-        df[f'{col}_step3'] = df[step2_col].apply(lambda x: remove_stopwords(x, MIN_WORD_LENGTH))
-        
-        # Calculate stats after
-        after_words = df[f'{col}_step3'].str.split().str.len().mean()
-        reduction = ((before_words - after_words) / before_words * 100) if before_words > 0 else 0
-        
-        print(f"  Avg words before: {before_words:.1f}")
-        print(f"  Avg words after: {after_words:.1f}")
-        print(f"  Reduction: {reduction:.1f}%")
-        
-        if VERBOSE:
-            sample_idx = 0
-            before = df[step2_col].iloc[sample_idx]
-            after = df[f'{col}_step3'].iloc[sample_idx]
-            
-            print(f"\n📝 Sample:")
-            print(f"  BEFORE: {before[:100]}...")
-            print(f"  AFTER:  {after[:100]}...")
-            print()
+    # CONTENT: Remove stopwords - REPLACE column
+    print(f"🔄 Processing: content")
+    
+    # Calculate stats before
+    before_words = df['content'].str.split().str.len().mean()
+    
+    if VERBOSE:
+        sample_idx = 0
+        before_content = df['content'].iloc[sample_idx]
+    
+    # REPLACE content with stopwords removed
+    df['content'] = df['content'].apply(lambda x: remove_stopwords(x, MIN_WORD_LENGTH))
+    
+    # Calculate stats after
+    after_words = df['content'].str.split().str.len().mean()
+    reduction = ((before_words - after_words) / before_words * 100) if before_words > 0 else 0
+    
+    print(f"  Avg words before: {before_words:.1f}")
+    print(f"  Avg words after: {after_words:.1f}")
+    print(f"  Reduction: {reduction:.1f}%")
+    
+    if VERBOSE:
+        print(f"\n📝 Sample CONTENT:")
+        print(f"  BEFORE: {before_content[:100]}...")
+        print(f"  AFTER:  {df['content'].iloc[sample_idx][:100]}...")
+        print()
+    
+    # TITLE: Minimal stopword removal - REPLACE column
+    print(f"\n🔄 Processing: title (minimal stopwords)")
+    
+    if VERBOSE:
+        before_title = df['title'].iloc[0]
+    
+    df['title'] = df['title'].apply(lambda x: remove_stopwords(x, 1))
+    
+    if VERBOSE:
+        print(f"\n📝 Sample TITLE:")
+        print(f"  Before: {before_title}")
+        print(f"  After:  {df['title'].iloc[0]}")
+        print()
     
     print(f"💾 Saving to: {STEP3_OUTPUT}")
     df.to_csv(STEP3_OUTPUT, index=False, encoding='utf-8')

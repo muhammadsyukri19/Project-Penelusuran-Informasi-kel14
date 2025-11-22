@@ -84,29 +84,39 @@ def main():
     df = pd.read_csv(INPUT_FILE, encoding='utf-8')
     print(f"✅ Loaded {len(df)} articles\n")
     
-    # Process each text column
-    for col in TEXT_COLUMNS:
-        if col not in df.columns:
-            print(f"⚠️  Column '{col}' not found, skipping...")
-            continue
-        
-        print(f"🔄 Processing column: {col}")
-        
-        # Apply cleaning
-        df[f'{col}_step1'] = df[col].fillna('').apply(basic_clean)
-        
-        # Show sample
-        if VERBOSE:
-            sample_idx = 0
-            original = df[col].iloc[sample_idx]
-            cleaned = df[f'{col}_step1'].iloc[sample_idx]
-            
-            print(f"\n📝 Sample transformation:")
-            print(f"  BEFORE (first 150 chars):")
-            print(f"  {repr(original[:150])}...")
-            print(f"\n  AFTER (first 150 chars):")
-            print(f"  {cleaned[:150]}...")
-            print()
+    # Process CONTENT (yang paling berantakan) - REPLACE column
+    print(f"🔄 Processing column: content")
+    
+    # Save original for comparison
+    if VERBOSE:
+        sample_idx = 0
+        original_content = df['content'].iloc[sample_idx]
+    
+    # REPLACE content column with cleaned version
+    df['content'] = df['content'].fillna('').apply(basic_clean)
+    
+    # Show sample for content
+    if VERBOSE:
+        print(f"\n📝 Sample CONTENT transformation:")
+        print(f"  BEFORE (first 200 chars):")
+        print(f"  {repr(original_content[:200])}...")
+        print(f"\n  AFTER (first 200 chars):")
+        print(f"  {df['content'].iloc[sample_idx][:200]}...")
+        print()
+    
+    # Title: basic cleaning saja (sudah rapi) - REPLACE column
+    print(f"🔄 Processing column: title (basic only)")
+    
+    if VERBOSE:
+        original_title = df['title'].iloc[0]
+    
+    df['title'] = df['title'].fillna('').str.lower().str.strip()
+    
+    if VERBOSE:
+        print(f"\n📝 Sample TITLE:")
+        print(f"  Original: {original_title}")
+        print(f"  Cleaned:  {df['title'].iloc[0]}")
+        print()
     
     # Save
     print(f"💾 Saving to: {STEP1_OUTPUT}")

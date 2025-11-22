@@ -11,7 +11,8 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from steps import step1_basic_cleaning
 from steps import step2_normalize
 from steps import step3_remove_stopwords
-from steps import step4_finalize
+from steps import step4_stemming 
+from steps import step5_finalize 
 
 
 def run_all():
@@ -25,7 +26,8 @@ def run_all():
         ("Step 1: Basic Cleaning", step1_basic_cleaning.main),
         ("Step 2: Normalization", step2_normalize.main),
         ("Step 3: Remove Stopwords", step3_remove_stopwords.main),
-        ("Step 4: Finalize & Combine", step4_finalize.main),
+        ("Step 4: Stemming", step4_stemming.main),  # Stemming dulu
+        ("Step 5: Finalize & Combine", step5_finalize.main),  # Finalize terakhir 
     ]
     
     total_start = time.time()

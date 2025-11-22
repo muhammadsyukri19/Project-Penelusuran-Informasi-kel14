@@ -66,24 +66,34 @@ def main():
     df = pd.read_csv(STEP1_OUTPUT, encoding='utf-8')
     print(f"✅ Loaded {len(df)} articles\n")
     
-    for col in TEXT_COLUMNS:
-        step1_col = f'{col}_step1'
-        if step1_col not in df.columns:
-            print(f"⚠️  Column '{step1_col}' not found, skipping...")
-            continue
-        
-        print(f"🔄 Processing: {step1_col}")
-        df[f'{col}_step2'] = df[step1_col].apply(lambda x: normalize_text(x, KEEP_NUMBERS))
-        
-        if VERBOSE:
-            sample_idx = 0
-            before = df[step1_col].iloc[sample_idx]
-            after = df[f'{col}_step2'].iloc[sample_idx]
-            
-            print(f"\n📝 Sample:")
-            print(f"  BEFORE: {before[:100]}...")
-            print(f"  AFTER:  {after[:100]}...")
-            print()
+    # CONTENT: Full normalization - REPLACE column
+    print(f"🔄 Processing: content (full normalization)")
+    
+    if VERBOSE:
+        sample_idx = 0
+        before_content = df['content'].iloc[sample_idx]
+    
+    df['content'] = df['content'].apply(lambda x: normalize_text(x, KEEP_NUMBERS))
+    
+    if VERBOSE:
+        print(f"\n📝 Sample CONTENT:")
+        print(f"  BEFORE: {before_content[:100]}...")
+        print(f"  AFTER:  {df['content'].iloc[sample_idx][:100]}...")
+        print()
+    
+    # TITLE: Basic normalization - REPLACE column
+    print(f"🔄 Processing: title (basic normalization)")
+    
+    if VERBOSE:
+        before_title = df['title'].iloc[0]
+    
+    df['title'] = df['title'].apply(remove_punctuation)
+    
+    if VERBOSE:
+        print(f"\n📝 Sample TITLE:")
+        print(f"  Before: {before_title}")
+        print(f"  After:  {df['title'].iloc[0]}")
+        print()
     
     print(f"💾 Saving to: {STEP2_OUTPUT}")
     df.to_csv(STEP2_OUTPUT, index=False, encoding='utf-8')
