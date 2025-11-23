@@ -1,12 +1,52 @@
 [
-  "persib dewa united",
-  "rizky ridho persija",
-  "jadwal persis solo",
-  "timnas indonesia u-23",
-  "heimir hallgrimsson timnas indonesia",
-  "arema vs persija keributan",
-  "bri super league klasemen persib",
-  "persijap jepara 6 kekalahan beruntun",
-  "persib selangor acl 2",
-  "madura united vs persijap prediksi"
+  {
+    "query": "persib bandung",
+    "relevant_urls": [
+      "https://www.bola.net/indonesia/prediksi-selangor-fc-vs-persib-bandung-6-november-2025-d3a993.html",
+      "https://www.bola.net/indonesia/nonton-live-streaming-selangor-fc-vs-persib-bandung-di-rcti-dan-gtv-afc-champions-league-two--f2bdb7.html",
+      "https://www.bola.net/indonesia/klasemen-grup-g-afc-champions-league-two-usai-persib-menang-lawan-selangor-puncak-klasemen-mi-5ae522.html",
+      "https://www.bola.net/indonesia/skenario-persib-bandung-lolos-16-besar-afc-champions-league-2025-2026-hanya-butuh-1-poin-lagi-e79d9b.html",
+      "https://www.bola.net/indonesia/3-faktor-kunci-kemenangan-3-2-persib-bandung-lawan-selangor-fc-bukan-keajaiban-tapi-bojan-hod-3f44cf.html"
+    ]
+  },
+  {
+    "query": "persija jakarta",
+    "relevant_urls": [
+      "https://www.bola.net/indonesia/prediksi-bri-super-league-arema-fc-vs-persija-jakarta-8-november-2025-470942.html",
+      "https://bola.kompas.com/read/2025/11/06/17130908/jelang-lawan-arema-fc-pelatih-persija-blak-blakan-kunci-tiga-kemenangan-beruntun",
+      "https://www.bola.net/indonesia/resmi-rizky-ridho-perpanjang-kontrak-di-persija-jakarta-hingga-2028-ngebet-juara-bri-super-le-3cb9c7.html",
+      "https://bola.kompas.com/read/2025/11/08/17424398/hasil-arema-fc-vs-persija-1-2-brace-eksel-tekel-horor-guevara-dan-keributan",
+      "https://bola.kompas.com/read/2025/11/08/14572068/link-live-streaming-arema-fc-vs-persija-di-super-league-pekan-ke-12"
+    ]
+  },
+  {
+    "query": "arema fc",
+    "relevant_urls": [
+      "https://www.bola.net/indonesia/prediksi-bri-super-league-arema-fc-vs-persija-jakarta-8-november-2025-470942.html",
+      "https://bola.kompas.com/read/2025/11/03/17373148/link-live-streaming-semen-padang-vs-arema-fc-di-super-league-2025-2026",
+      "https://www.bola.net/indonesia/prediksi-bri-super-league-semen-padang-vs-arema-fc-3-november-2025-e61686.html",
+      "https://www.bola.net/indonesia/hasil-semen-padang-vs-arema-fc-kabau-sirah-rasakan-kekalahan-7-laga-beruntun-di-bri-super-lea-19ebf8.html",
+      "https://bola.kompas.com/read/2025/11/03/21030768/hasil-semen-padang-vs-arema-fc-1-2-duo-brasil-bawa-singo-edan-kunci-3-poin"
+    ]
+  },
+  {
+    "query": "persebaya surabaya",
+    "relevant_urls": [
+      "https://bola.kompas.com/read/2025/11/07/11000038/jadwal-dan-siaran-langsung-persik-vs-persebaya-di-super-league",
+      "https://www.bola.net/indonesia/nonton-live-streaming-persik-kediri-vs-persebaya-surabaya-di-indosiar-bri-super-league-2025-2-3320de.html",
+      "https://bola.kompas.com/read/2025/11/02/15201898/persebaya-vs-persis-bangkit-dari-kritik-bruno-moreira-tatap-100-laga",
+      "https://www.bola.net/indonesia/nonton-live-streaming-persebaya-surabaya-vs-persis-solo-di-indosiar-bri-super-league-2025-202-a16a9d.html",
+      "https://www.bola.net/indonesia/hasil-persik-kediri-vs-persebaya-surabaya-rivera-kartu-merah-derbi-jawa-timur-berakhir-imbang-2a611e.html"
+    ]
+  },
+  {
+    "query": "jadwal bri liga 1 hari ini",
+    "relevant_urls": [
+      "https://www.bola.net/indonesia/nonton-live-streaming-persebaya-surabaya-vs-persis-solo-di-indosiar-bri-super-league-2025-202-a16a9d.html",
+      "https://www.bola.net/indonesia/nonton-live-streaming-psm-makassar-vs-madura-united-di-indosiar-bri-super-league-2025-2026-dfe612.html",
+      "https://www.bola.net/indonesia/nonton-live-streaming-bhayangkara-fc-vs-persita-tangerang-di-indosiar-bri-super-league-2025-2-7ebf5a.html",
+      "https://www.bola.net/indonesia/9-laga-tanpa-kemenangan-begini-suasana-ruang-ganti-persis-solo-di-bri-super-league-364b42.html",
+      "https://www.bola.net/indonesia/thom-haye-nikmati-jeda-langka-usai-jadwal-super-padat-bersama-persib-bandung-dan-timnas-indon-2f25f3.html"
+    ]
+  }
 ]

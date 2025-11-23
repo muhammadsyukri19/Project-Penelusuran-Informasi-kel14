@@ -1,0 +1,264 @@
+{
+  "TF-IDF": {
+    "method": "TF-IDF",
+    "MAP": 0.9422222222222223,
+    "per_query": [
+      {
+        "query": "persib bandung",
+        "relevant_urls": [
+          "https://www.bola.net/indonesia/prediksi-selangor-fc-vs-persib-bandung-6-november-2025-d3a993.html",
+          "https://www.bola.net/indonesia/nonton-live-streaming-selangor-fc-vs-persib-bandung-di-rcti-dan-gtv-afc-champions-league-two--f2bdb7.html",
+          "https://www.bola.net/indonesia/klasemen-grup-g-afc-champions-league-two-usai-persib-menang-lawan-selangor-puncak-klasemen-mi-5ae522.html",
+          "https://www.bola.net/indonesia/skenario-persib-bandung-lolos-16-besar-afc-champions-league-2025-2026-hanya-butuh-1-poin-lagi-e79d9b.html",
+          "https://www.bola.net/indonesia/3-faktor-kunci-kemenangan-3-2-persib-bandung-lawan-selangor-fc-bukan-keajaiban-tapi-bojan-hod-3f44cf.html"
+        ],
+        "retrieved_urls": [
+          "https://www.bola.net/indonesia/prediksi-selangor-fc-vs-persib-bandung-6-november-2025-d3a993.html",
+          "https://www.bola.net/indonesia/nonton-live-streaming-selangor-fc-vs-persib-bandung-di-rcti-dan-gtv-afc-champions-league-two--f2bdb7.html",
+          "https://www.bola.net/indonesia/klasemen-grup-g-afc-champions-league-two-usai-persib-menang-lawan-selangor-puncak-klasemen-mi-5ae522.html",
+          "https://www.bola.net/indonesia/skenario-persib-bandung-lolos-16-besar-afc-champions-league-2025-2026-hanya-butuh-1-poin-lagi-e79d9b.html",
+          "https://www.bola.net/indonesia/3-faktor-kunci-kemenangan-3-2-persib-bandung-lawan-selangor-fc-bukan-keajaiban-tapi-bojan-hod-3f44cf.html",
+          "https://www.bola.net/indonesia/misi-saddil-ramdani-ketika-kembali-ke-malaysia-bawa-persib-bandung-taklukkan-selangor-fc-407bd2.html",
+          "https://www.bola.net/indonesia/hasil-selangor-vs-persib-bandung-maung-bandung-comeback-sensasional-menang-3-2-di-markas-gerg-c56d74.html",
+          "https://www.bola.net/indonesia/satu-poin-lagi-menuju-sejarah-persib-bandung-di-ambang-lolos-ke-16-besar-afc-champions-league-b815e1.html",
+          "https://www.bola.net/indonesia/persib-bandung-lagi-bahagia-thom-haye-ungkap-suasana-ruang-ganti-setelah-5-kemenangan-beruntu-4534f6.html",
+          "https://www.bola.net/indonesia/mantan-pemain-optimistis-persib-bandung-pertahankan-gelar-hattrick-juara-bri-super-league-21a189.html"
+        ],
+        "AP": 1.0,
+        "P@5": 1.0,
+        "P@10": 0.5
+      },
+      {
+        "query": "persija jakarta",
+        "relevant_urls": [
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-arema-fc-vs-persija-jakarta-8-november-2025-470942.html",
+          "https://bola.kompas.com/read/2025/11/06/17130908/jelang-lawan-arema-fc-pelatih-persija-blak-blakan-kunci-tiga-kemenangan-beruntun",
+          "https://www.bola.net/indonesia/resmi-rizky-ridho-perpanjang-kontrak-di-persija-jakarta-hingga-2028-ngebet-juara-bri-super-le-3cb9c7.html",
+          "https://bola.kompas.com/read/2025/11/08/17424398/hasil-arema-fc-vs-persija-1-2-brace-eksel-tekel-horor-guevara-dan-keributan",
+          "https://bola.kompas.com/read/2025/11/08/14572068/link-live-streaming-arema-fc-vs-persija-di-super-league-pekan-ke-12"
+        ],
+        "retrieved_urls": [
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-arema-fc-vs-persija-jakarta-8-november-2025-470942.html",
+          "https://bola.kompas.com/read/2025/11/06/17130908/jelang-lawan-arema-fc-pelatih-persija-blak-blakan-kunci-tiga-kemenangan-beruntun",
+          "https://www.bola.net/indonesia/resmi-rizky-ridho-perpanjang-kontrak-di-persija-jakarta-hingga-2028-ngebet-juara-bri-super-le-3cb9c7.html",
+          "https://bola.kompas.com/read/2025/11/08/17424398/hasil-arema-fc-vs-persija-1-2-brace-eksel-tekel-horor-guevara-dan-keributan",
+          "https://bola.kompas.com/read/2025/11/08/14572068/link-live-streaming-arema-fc-vs-persija-di-super-league-pekan-ke-12",
+          "https://www.bola.net/indonesia/misi-persija-di-kandang-arema-fc-macan-kemayoran-tengah-on-fire-ingin-perpanjang-3-catatan-ke-96f330.html",
+          "https://bola.kompas.com/read/2025/11/06/20335938/persija-jakarta-rindu-bermain-di-kandang-dan-dukungan-penuh-jakmania",
+          "https://www.bola.net/indonesia/kata-kata-bahagia-mauricio-souza-usai-persija-catat-hattrick-kemenangan-di-bri-super-league-p-ad2f34.html",
+          "https://www.bola.net/indonesia/nyekor-di-epa-u-18-striker-kelahiran-australia-ini-masuk-radar-pelatih-klub-bri-super-league--7affe7.html",
+          "https://bola.kompas.com/read/2025/11/09/14184538/laga-panas-arema-fc-vs-persija-di-kanjuruhan-ricuh-di-bench-5-kartu-merah"
+        ],
+        "AP": 1.0,
+        "P@5": 1.0,
+        "P@10": 0.5
+      },
+      {
+        "query": "arema fc",
+        "relevant_urls": [
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-arema-fc-vs-persija-jakarta-8-november-2025-470942.html",
+          "https://bola.kompas.com/read/2025/11/03/17373148/link-live-streaming-semen-padang-vs-arema-fc-di-super-league-2025-2026",
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-semen-padang-vs-arema-fc-3-november-2025-e61686.html",
+          "https://www.bola.net/indonesia/hasil-semen-padang-vs-arema-fc-kabau-sirah-rasakan-kekalahan-7-laga-beruntun-di-bri-super-lea-19ebf8.html",
+          "https://bola.kompas.com/read/2025/11/03/21030768/hasil-semen-padang-vs-arema-fc-1-2-duo-brasil-bawa-singo-edan-kunci-3-poin"
+        ],
+        "retrieved_urls": [
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-arema-fc-vs-persija-jakarta-8-november-2025-470942.html",
+          "https://bola.kompas.com/read/2025/11/03/17373148/link-live-streaming-semen-padang-vs-arema-fc-di-super-league-2025-2026",
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-semen-padang-vs-arema-fc-3-november-2025-e61686.html",
+          "https://www.bola.net/indonesia/hasil-semen-padang-vs-arema-fc-kabau-sirah-rasakan-kekalahan-7-laga-beruntun-di-bri-super-lea-19ebf8.html",
+          "https://bola.kompas.com/read/2025/11/08/17424398/hasil-arema-fc-vs-persija-1-2-brace-eksel-tekel-horor-guevara-dan-keributan",
+          "https://bola.kompas.com/read/2025/11/07/17433358/arema-fc-vs-persija-singo-edan-terancam-tanpa-mesin-gol-super-league",
+          "https://bola.kompas.com/read/2025/11/13/09484698/derbi-jatim-tidak-main-main-arema-fc-siapkan-mental-hadapi-persebaya",
+          "https://www.bola.net/indonesia/saksikan-dan-nonton-bri-super-league-arema-fc-vs-persija-eksklusif-di-vidio-8ff8b1.html",
+          "https://bola.kompas.com/read/2025/11/03/21030768/hasil-semen-padang-vs-arema-fc-1-2-duo-brasil-bawa-singo-edan-kunci-3-poin",
+          "https://bola.kompas.com/read/2025/11/09/13134988/ribut-arema-fc-vs-persija-mauricio-souza-yang-mau-berkelahi-jangan-di-lapangan"
+        ],
+        "AP": 0.9111111111111111,
+        "P@5": 0.8,
+        "P@10": 0.5
+      },
+      {
+        "query": "persebaya surabaya",
+        "relevant_urls": [
+          "https://bola.kompas.com/read/2025/11/07/11000038/jadwal-dan-siaran-langsung-persik-vs-persebaya-di-super-league",
+          "https://www.bola.net/indonesia/nonton-live-streaming-persik-kediri-vs-persebaya-surabaya-di-indosiar-bri-super-league-2025-2-3320de.html",
+          "https://bola.kompas.com/read/2025/11/02/15201898/persebaya-vs-persis-bangkit-dari-kritik-bruno-moreira-tatap-100-laga",
+          "https://www.bola.net/indonesia/nonton-live-streaming-persebaya-surabaya-vs-persis-solo-di-indosiar-bri-super-league-2025-202-a16a9d.html",
+          "https://www.bola.net/indonesia/hasil-persik-kediri-vs-persebaya-surabaya-rivera-kartu-merah-derbi-jawa-timur-berakhir-imbang-2a611e.html"
+        ],
+        "retrieved_urls": [
+          "https://bola.kompas.com/read/2025/11/07/11000038/jadwal-dan-siaran-langsung-persik-vs-persebaya-di-super-league",
+          "https://www.bola.net/indonesia/nonton-live-streaming-persik-kediri-vs-persebaya-surabaya-di-indosiar-bri-super-league-2025-2-3320de.html",
+          "https://bola.kompas.com/read/2025/11/02/15201898/persebaya-vs-persis-bangkit-dari-kritik-bruno-moreira-tatap-100-laga",
+          "https://www.bola.net/indonesia/nonton-live-streaming-persebaya-surabaya-vs-persis-solo-di-indosiar-bri-super-league-2025-202-a16a9d.html",
+          "https://www.bola.net/indonesia/hasil-persik-kediri-vs-persebaya-surabaya-rivera-kartu-merah-derbi-jawa-timur-berakhir-imbang-2a611e.html",
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-persik-kediri-vs-persebaya-surabaya-7-november-2025-e96fd3.html",
+          "https://bola.kompas.com/read/2025/11/07/12183348/persik-vs-persebaya-derbi-jatim-di-gresik-macan-putih-tetap-percaya-diri",
+          "https://www.bola.net/indonesia/hasil-persebaya-surabaya-vs-persis-solo-bajul-ijo-comeback-laskar-sambernyawa-9-laga-tanpa-ke-2d779d.html",
+          "https://bola.kompas.com/read/2025/11/13/09484698/derbi-jatim-tidak-main-main-arema-fc-siapkan-mental-hadapi-persebaya",
+          "https://bola.kompas.com/read/2025/11/02/20592908/hasil-persebaya-vs-persis-solo-2-1-gol-francisco-rivera-jadi-penentu"
+        ],
+        "AP": 1.0,
+        "P@5": 1.0,
+        "P@10": 0.5
+      },
+      {
+        "query": "jadwal bri liga 1 hari ini",
+        "relevant_urls": [
+          "https://www.bola.net/indonesia/nonton-live-streaming-persebaya-surabaya-vs-persis-solo-di-indosiar-bri-super-league-2025-202-a16a9d.html",
+          "https://www.bola.net/indonesia/nonton-live-streaming-psm-makassar-vs-madura-united-di-indosiar-bri-super-league-2025-2026-dfe612.html",
+          "https://www.bola.net/indonesia/nonton-live-streaming-bhayangkara-fc-vs-persita-tangerang-di-indosiar-bri-super-league-2025-2-7ebf5a.html",
+          "https://www.bola.net/indonesia/9-laga-tanpa-kemenangan-begini-suasana-ruang-ganti-persis-solo-di-bri-super-league-364b42.html",
+          "https://www.bola.net/indonesia/thom-haye-nikmati-jeda-langka-usai-jadwal-super-padat-bersama-persib-bandung-dan-timnas-indon-2f25f3.html"
+        ],
+        "retrieved_urls": [
+          "https://www.bola.net/indonesia/nonton-live-streaming-persebaya-surabaya-vs-persis-solo-di-indosiar-bri-super-league-2025-202-a16a9d.html",
+          "https://www.bola.net/indonesia/nonton-live-streaming-psm-makassar-vs-madura-united-di-indosiar-bri-super-league-2025-2026-dfe612.html",
+          "https://www.bola.net/indonesia/nonton-live-streaming-bhayangkara-fc-vs-persita-tangerang-di-indosiar-bri-super-league-2025-2-7ebf5a.html",
+          "https://www.bola.net/indonesia/9-laga-tanpa-kemenangan-begini-suasana-ruang-ganti-persis-solo-di-bri-super-league-364b42.html",
+          "https://www.bola.net/indonesia/kemenangan-dramatis-atas-selangor-fc-sukses-naikkan-mental-persib-bandung-di-bri-super-league-995572.html",
+          "https://www.bola.net/indonesia/mengapa-larangan-suporter-away-di-bri-super-league-belum-dicabut-i-league-wewenang-ada-di-pss-40b457.html",
+          "https://bola.kompas.com/read/2025/11/02/13211138/psm-vs-madura-united-pasukan-ramang-buru-kado-ulang-tahun-ke-110",
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-bhayangkara-fc-vs-bali-united-7-november-2025-d98204.html",
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-dewa-united-vs-psm-makassar-9-november-2025-2899a2.html",
+          "https://www.bola.net/indonesia/bek-italia-banggakan-lini-belakang-persib-jelang-hadapi-bali-united-di-bri-super-league-hanya-8409e9.html"
+        ],
+        "AP": 0.8,
+        "P@5": 0.8,
+        "P@10": 0.4
+      }
+    ]
+  },
+  "BM25": {
+    "method": "BM25",
+    "MAP": 0.7598888888888888,
+    "per_query": [
+      {
+        "query": "persib bandung",
+        "relevant_urls": [
+          "https://www.bola.net/indonesia/prediksi-selangor-fc-vs-persib-bandung-6-november-2025-d3a993.html",
+          "https://www.bola.net/indonesia/nonton-live-streaming-selangor-fc-vs-persib-bandung-di-rcti-dan-gtv-afc-champions-league-two--f2bdb7.html",
+          "https://www.bola.net/indonesia/klasemen-grup-g-afc-champions-league-two-usai-persib-menang-lawan-selangor-puncak-klasemen-mi-5ae522.html",
+          "https://www.bola.net/indonesia/skenario-persib-bandung-lolos-16-besar-afc-champions-league-2025-2026-hanya-butuh-1-poin-lagi-e79d9b.html",
+          "https://www.bola.net/indonesia/3-faktor-kunci-kemenangan-3-2-persib-bandung-lawan-selangor-fc-bukan-keajaiban-tapi-bojan-hod-3f44cf.html"
+        ],
+        "retrieved_urls": [
+          "https://www.bola.net/indonesia/prediksi-selangor-fc-vs-persib-bandung-6-november-2025-d3a993.html",
+          "https://www.bola.net/indonesia/nonton-live-streaming-selangor-fc-vs-persib-bandung-di-rcti-dan-gtv-afc-champions-league-two--f2bdb7.html",
+          "https://www.bola.net/indonesia/skenario-persib-bandung-lolos-16-besar-afc-champions-league-2025-2026-hanya-butuh-1-poin-lagi-e79d9b.html",
+          "https://www.bola.net/indonesia/klasemen-grup-g-afc-champions-league-two-usai-persib-menang-lawan-selangor-puncak-klasemen-mi-5ae522.html",
+          "https://www.bola.net/indonesia/misi-saddil-ramdani-ketika-kembali-ke-malaysia-bawa-persib-bandung-taklukkan-selangor-fc-407bd2.html",
+          "https://www.bola.net/indonesia/hasil-selangor-vs-persib-bandung-maung-bandung-comeback-sensasional-menang-3-2-di-markas-gerg-c56d74.html",
+          "https://www.bola.net/indonesia/satu-poin-lagi-menuju-sejarah-persib-bandung-di-ambang-lolos-ke-16-besar-afc-champions-league-b815e1.html",
+          "https://www.bola.net/indonesia/3-faktor-kunci-kemenangan-3-2-persib-bandung-lawan-selangor-fc-bukan-keajaiban-tapi-bojan-hod-3f44cf.html",
+          "https://www.bola.net/indonesia/mantan-pemain-optimistis-persib-bandung-pertahankan-gelar-hattrick-juara-bri-super-league-21a189.html",
+          "https://sports.sindonews.com/read/1640157/11/nonton-selangor-fc-vs-persib-bandung-di-vision-ini-cara-dan-paket-streamingnya-1762229480"
+        ],
+        "AP": 0.925,
+        "P@5": 0.8,
+        "P@10": 0.5
+      },
+      {
+        "query": "persija jakarta",
+        "relevant_urls": [
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-arema-fc-vs-persija-jakarta-8-november-2025-470942.html",
+          "https://bola.kompas.com/read/2025/11/06/17130908/jelang-lawan-arema-fc-pelatih-persija-blak-blakan-kunci-tiga-kemenangan-beruntun",
+          "https://www.bola.net/indonesia/resmi-rizky-ridho-perpanjang-kontrak-di-persija-jakarta-hingga-2028-ngebet-juara-bri-super-le-3cb9c7.html",
+          "https://bola.kompas.com/read/2025/11/08/17424398/hasil-arema-fc-vs-persija-1-2-brace-eksel-tekel-horor-guevara-dan-keributan",
+          "https://bola.kompas.com/read/2025/11/08/14572068/link-live-streaming-arema-fc-vs-persija-di-super-league-pekan-ke-12"
+        ],
+        "retrieved_urls": [
+          "https://sports.sindonews.com/read/1646119/11/kiper-muda-bandung-rizki-nur-fadhilah-korban-tppo-kemlu-ia-sengaja-berangkat-ke-kamboja-1763597461",
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-arema-fc-vs-persija-jakarta-8-november-2025-470942.html",
+          "https://www.bola.net/indonesia/resmi-rizky-ridho-perpanjang-kontrak-di-persija-jakarta-hingga-2028-ngebet-juara-bri-super-le-3cb9c7.html",
+          "https://bola.kompas.com/read/2025/11/08/17424398/hasil-arema-fc-vs-persija-1-2-brace-eksel-tekel-horor-guevara-dan-keributan",
+          "https://www.bola.net/indonesia/nyekor-di-epa-u-18-striker-kelahiran-australia-ini-masuk-radar-pelatih-klub-bri-super-league--7affe7.html",
+          "https://bola.kompas.com/read/2025/11/06/17130908/jelang-lawan-arema-fc-pelatih-persija-blak-blakan-kunci-tiga-kemenangan-beruntun",
+          "https://bola.kompas.com/read/2025/11/06/20335938/persija-jakarta-rindu-bermain-di-kandang-dan-dukungan-penuh-jakmania",
+          "https://bola.kompas.com/read/2025/11/09/14184538/laga-panas-arema-fc-vs-persija-di-kanjuruhan-ricuh-di-bench-5-kartu-merah",
+          "https://bola.kompas.com/read/2025/11/08/14572068/link-live-streaming-arema-fc-vs-persija-di-super-league-pekan-ke-12",
+          "https://www.bola.net/indonesia/kata-kata-bahagia-mauricio-souza-usai-persija-catat-hattrick-kemenangan-di-bri-super-league-p-ad2f34.html"
+        ],
+        "AP": 0.6277777777777777,
+        "P@5": 0.6,
+        "P@10": 0.5
+      },
+      {
+        "query": "arema fc",
+        "relevant_urls": [
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-arema-fc-vs-persija-jakarta-8-november-2025-470942.html",
+          "https://bola.kompas.com/read/2025/11/03/17373148/link-live-streaming-semen-padang-vs-arema-fc-di-super-league-2025-2026",
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-semen-padang-vs-arema-fc-3-november-2025-e61686.html",
+          "https://www.bola.net/indonesia/hasil-semen-padang-vs-arema-fc-kabau-sirah-rasakan-kekalahan-7-laga-beruntun-di-bri-super-lea-19ebf8.html",
+          "https://bola.kompas.com/read/2025/11/03/21030768/hasil-semen-padang-vs-arema-fc-1-2-duo-brasil-bawa-singo-edan-kunci-3-poin"
+        ],
+        "retrieved_urls": [
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-arema-fc-vs-persija-jakarta-8-november-2025-470942.html",
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-semen-padang-vs-arema-fc-3-november-2025-e61686.html",
+          "https://bola.kompas.com/read/2025/11/03/17373148/link-live-streaming-semen-padang-vs-arema-fc-di-super-league-2025-2026",
+          "https://bola.kompas.com/read/2025/11/03/21030768/hasil-semen-padang-vs-arema-fc-1-2-duo-brasil-bawa-singo-edan-kunci-3-poin",
+          "https://www.bola.net/indonesia/hasil-semen-padang-vs-arema-fc-kabau-sirah-rasakan-kekalahan-7-laga-beruntun-di-bri-super-lea-19ebf8.html",
+          "https://bola.kompas.com/read/2025/11/08/17424398/hasil-arema-fc-vs-persija-1-2-brace-eksel-tekel-horor-guevara-dan-keributan",
+          "https://bola.kompas.com/read/2025/11/07/17433358/arema-fc-vs-persija-singo-edan-terancam-tanpa-mesin-gol-super-league",
+          "https://www.bola.net/indonesia/saksikan-dan-nonton-bri-super-league-arema-fc-vs-persija-eksklusif-di-vidio-8ff8b1.html",
+          "https://bola.kompas.com/read/2025/11/13/09484698/derbi-jatim-tidak-main-main-arema-fc-siapkan-mental-hadapi-persebaya",
+          "https://bola.kompas.com/read/2025/11/09/13134988/ribut-arema-fc-vs-persija-mauricio-souza-yang-mau-berkelahi-jangan-di-lapangan"
+        ],
+        "AP": 1.0,
+        "P@5": 1.0,
+        "P@10": 0.5
+      },
+      {
+        "query": "persebaya surabaya",
+        "relevant_urls": [
+          "https://bola.kompas.com/read/2025/11/07/11000038/jadwal-dan-siaran-langsung-persik-vs-persebaya-di-super-league",
+          "https://www.bola.net/indonesia/nonton-live-streaming-persik-kediri-vs-persebaya-surabaya-di-indosiar-bri-super-league-2025-2-3320de.html",
+          "https://bola.kompas.com/read/2025/11/02/15201898/persebaya-vs-persis-bangkit-dari-kritik-bruno-moreira-tatap-100-laga",
+          "https://www.bola.net/indonesia/nonton-live-streaming-persebaya-surabaya-vs-persis-solo-di-indosiar-bri-super-league-2025-202-a16a9d.html",
+          "https://www.bola.net/indonesia/hasil-persik-kediri-vs-persebaya-surabaya-rivera-kartu-merah-derbi-jawa-timur-berakhir-imbang-2a611e.html"
+        ],
+        "retrieved_urls": [
+          "https://bola.kompas.com/read/2025/11/07/11000038/jadwal-dan-siaran-langsung-persik-vs-persebaya-di-super-league",
+          "https://www.bola.net/indonesia/nonton-live-streaming-persik-kediri-vs-persebaya-surabaya-di-indosiar-bri-super-league-2025-2-3320de.html",
+          "https://bola.kompas.com/read/2025/11/02/15201898/persebaya-vs-persis-bangkit-dari-kritik-bruno-moreira-tatap-100-laga",
+          "https://www.bola.net/indonesia/nonton-live-streaming-persebaya-surabaya-vs-persis-solo-di-indosiar-bri-super-league-2025-202-a16a9d.html",
+          "https://www.bola.net/indonesia/hasil-persik-kediri-vs-persebaya-surabaya-rivera-kartu-merah-derbi-jawa-timur-berakhir-imbang-2a611e.html",
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-persik-kediri-vs-persebaya-surabaya-7-november-2025-e96fd3.html",
+          "https://www.bola.net/indonesia/hasil-persebaya-surabaya-vs-persis-solo-bajul-ijo-comeback-laskar-sambernyawa-9-laga-tanpa-ke-2d779d.html",
+          "https://bola.kompas.com/read/2025/11/02/20592908/hasil-persebaya-vs-persis-solo-2-1-gol-francisco-rivera-jadi-penentu",
+          "https://bola.kompas.com/read/2025/11/07/12183348/persik-vs-persebaya-derbi-jatim-di-gresik-macan-putih-tetap-percaya-diri",
+          "https://bola.kompas.com/read/2025/11/13/09484698/derbi-jatim-tidak-main-main-arema-fc-siapkan-mental-hadapi-persebaya"
+        ],
+        "AP": 1.0,
+        "P@5": 1.0,
+        "P@10": 0.5
+      },
+      {
+        "query": "jadwal bri liga 1 hari ini",
+        "relevant_urls": [
+          "https://www.bola.net/indonesia/nonton-live-streaming-persebaya-surabaya-vs-persis-solo-di-indosiar-bri-super-league-2025-202-a16a9d.html",
+          "https://www.bola.net/indonesia/nonton-live-streaming-psm-makassar-vs-madura-united-di-indosiar-bri-super-league-2025-2026-dfe612.html",
+          "https://www.bola.net/indonesia/nonton-live-streaming-bhayangkara-fc-vs-persita-tangerang-di-indosiar-bri-super-league-2025-2-7ebf5a.html",
+          "https://www.bola.net/indonesia/9-laga-tanpa-kemenangan-begini-suasana-ruang-ganti-persis-solo-di-bri-super-league-364b42.html",
+          "https://www.bola.net/indonesia/thom-haye-nikmati-jeda-langka-usai-jadwal-super-padat-bersama-persib-bandung-dan-timnas-indon-2f25f3.html"
+        ],
+        "retrieved_urls": [
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-persis-solo-vs-psim-yogyakarta-8-november-2025-cad511.html",
+          "https://www.bola.net/indonesia/prediksi-bri-super-league-arema-fc-vs-persija-jakarta-8-november-2025-470942.html",
+          "https://www.bola.net/indonesia/9-laga-tanpa-kemenangan-begini-suasana-ruang-ganti-persis-solo-di-bri-super-league-364b42.html",
+          "https://www.bola.net/indonesia/skenario-persib-bandung-lolos-16-besar-afc-champions-league-2025-2026-hanya-butuh-1-poin-lagi-e79d9b.html",
+          "https://www.bola.net/indonesia/thom-haye-nikmati-jeda-langka-usai-jadwal-super-padat-bersama-persib-bandung-dan-timnas-indon-2f25f3.html",
+          "https://www.bola.net/indonesia/nonton-live-streaming-persebaya-surabaya-vs-persis-solo-di-indosiar-bri-super-league-2025-202-a16a9d.html",
+          "https://www.bola.net/indonesia/arema-fc-takluk-dari-persija-jakarta-di-bri-super-league-marcos-santos-ungkap-penyebabnya-a06dd5.html",
+          "https://www.bola.net/indonesia/bri-super-league-persib-bandung-sukses-akhiri-kutukan-di-stadion-kapten-i-wayan-dipta-a1de73.html",
+          "https://www.bola.net/indonesia/bri-super-league-musim-hujan-dan-dampaknya-pada-latihan-persik-kediri-4fed7b.html",
+          "https://bola.kompas.com/read/2025/10/30/18123038/arne-slot-tak-sesali-mainkan-pemain-muda-meski-liverpool-keok-dibantai-palace"
+        ],
+        "AP": 0.24666666666666667,
+        "P@5": 0.4,
+        "P@10": 0.3
+      }
+    ]
+  }
+}

@@ -1,9 +1,9 @@
 import os
-import json
 import re
 import pickle
 from typing import List, Dict, Any, Tuple
 
+import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -15,60 +15,74 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 DATA_DIR = os.path.join(ROOT_DIR, "data")
 INDEX_DIR = os.path.join(ROOT_DIR, "indexing")
 
-CORPUS_PATTERN_SUFFIX = "_bola_indonesia.json"
+# pakai dataset hasil preprocessing
+DATA_PATH = os.path.join(DATA_DIR, "merge-all-clean.csv")
+
 TFIDF_INDEX_PATH = os.path.join(INDEX_DIR, "tfidf_index.pkl")
 
 
 # ===================== UTILITAS =====================
 
 def simple_preprocess(text: str) -> str:
-    """Preprocessing ringan untuk TF-IDF (lowercase + buang karakter aneh)."""
+    """Preprocessing ringan untuk TF-IDF (lowercase + buang whitespace aneh)."""
     if not text:
         return ""
     text = text.lower()
-    # bisa ditambah stopword removal / stemming nanti
     text = re.sub(r"\s+", " ", text)
     return text.strip()
 
 
-def load_corpus() -> List[Dict[str, Any]]:
+def load_corpus_from_csv() -> List[Dict[str, Any]]:
     """
-    Load semua file JSON di folder data/ yang namanya diakhiri dengan `_bola_indonesia.json`.
-    Masing-masing file berisi list artikel: {url, title, content, ...}.
-    """
-    docs = []
-    if not os.path.isdir(DATA_DIR):
-        raise FileNotFoundError(f"Folder data tidak ditemukan: {DATA_DIR}")
+    Load korpus dari file CSV hasil preprocessing:
+    data/merge-all-clean.csv
 
-    for fname in os.listdir(DATA_DIR):
-        if not fname.endswith(CORPUS_PATTERN_SUFFIX):
+    Diasumsikan kolom minimal:
+      - 'title'
+      - 'content'
+      - 'url'           (optional, kalau tidak ada akan dikosongkan)
+      - 'published_at'  (optional)
+    """
+    if not os.path.isfile(DATA_PATH):
+        raise FileNotFoundError(f"Dataset CSV tidak ditemukan: {DATA_PATH}")
+
+    df = pd.read_csv(DATA_PATH)
+
+    # cek kolom wajib
+    if "title" not in df.columns or "content" not in df.columns:
+        raise ValueError(
+            "CSV harus punya kolom 'title' dan 'content'. "
+            f"Kolom yang ada sekarang: {list(df.columns)}"
+        )
+
+    docs: List[Dict[str, Any]] = []
+    for i, row in df.iterrows():
+        doc = {
+            "doc_id": int(i),
+            "title": str(row.get("title", "")) if not pd.isna(row.get("title", "")) else "",
+            "content": str(row.get("content", "")) if not pd.isna(row.get("content", "")) else "",
+            "url": str(row.get("url", "")) if "url" in df.columns and not pd.isna(row.get("url", "")) else "",
+            "published_at": (
+                str(row.get("published_at", ""))
+                if "published_at" in df.columns and not pd.isna(row.get("published_at", ""))
+                else None
+            ),
+        }
+
+        # skip kalau title + content kosong
+        if not doc["title"] and not doc["content"]:
             continue
-        fpath = os.path.join(DATA_DIR, fname)
-        with open(fpath, "r", encoding="utf-8") as f:
-            try:
-                items = json.load(f)
-            except json.JSONDecodeError:
-                print(f"[WARN] Gagal parse JSON: {fpath}")
-                continue
 
-        for item in items:
-            # pastikan ada field minimal
-            if "title" not in item or "content" not in item:
-                continue
-            docs.append(item)
+        docs.append(doc)
 
-    # beri id numerik
-    for i, d in enumerate(docs):
-        d["doc_id"] = i
-
-    print(f"[TF-IDF] Loaded {len(docs)} documents from data/")
+    print(f"[TF-IDF] Loaded {len(docs)} documents from CSV: {DATA_PATH}")
     return docs
 
 
 def build_or_load_tfidf_index() -> Tuple[TfidfVectorizer, Any, List[Dict[str, Any]]]:
     """
     Kalau index sudah ada di indexing/tfidf_index.pkl → load.
-    Kalau belum → build dari awal lalu simpan.
+    Kalau belum → build dari merge-all-clean.csv lalu simpan.
     """
     os.makedirs(INDEX_DIR, exist_ok=True)
 
@@ -78,8 +92,8 @@ def build_or_load_tfidf_index() -> Tuple[TfidfVectorizer, Any, List[Dict[str, An
         print("[TF-IDF] Index loaded from", TFIDF_INDEX_PATH)
         return data["vectorizer"], data["doc_matrix"], data["docs"]
 
-    # build baru
-    docs = load_corpus()
+    # build baru dari CSV
+    docs = load_corpus_from_csv()
     texts = []
     for d in docs:
         title = d.get("title", "")
@@ -129,7 +143,6 @@ def search_tfidf(query: str, top_k: int = 10) -> List[Dict[str, Any]]:
     q_vec = vectorizer.transform([q])
 
     sims = cosine_similarity(q_vec, doc_matrix)[0]  # shape: (n_docs,)
-    # ambil index dokumen dengan skor tertinggi
     top_idx = sims.argsort()[::-1][:top_k]
 
     results = []
@@ -155,7 +168,7 @@ def search_tfidf(query: str, top_k: int = 10) -> List[Dict[str, Any]]:
 # ===================== DEMO =====================
 
 if __name__ == "__main__":
-    print("=== Demo TF-IDF Search ===")
+    print("=== Demo TF-IDF Search (CSV: merge-all-clean.csv) ===")
     vectorizer, doc_matrix, docs = build_or_load_tfidf_index()
 
     while True:

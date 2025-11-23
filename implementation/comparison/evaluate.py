@@ -1,140 +1,153 @@
-import json
 import os
-from typing import List, Dict, Any
+import sys
+import json
+from typing import List, Dict, Callable, Any
 
+# ===================== PERBAIKAN PENTING =====================
+# Tambahkan root project ke sys.path supaya "implementation" bisa di-import
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+sys.path.append(ROOT_DIR)
+
+# Setelah sys.path ditambah, baru import modul search_engine
 from implementation.search_engine.search_tfidf import search_tfidf
 from implementation.search_engine.search_bm25 import search_bm25
 
+
 # ===================== KONFIGURASI =====================
 
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-COMPARISON_DIR = os.path.dirname(__file__)
-
-QUERIES_PATH = os.path.join(COMPARISON_DIR, "queries_example.json")
-RESULTS_PATH = os.path.join(COMPARISON_DIR, "results_tfidf_bm25.json")
-
-TOP_K = 10
+RESULT_PATH = os.path.join(os.path.dirname(__file__), "results_tfidf_bm25.json")
+QUERIES_FILE = os.path.join(os.path.dirname(__file__), "queries_example.json")
 
 
-# ===================== GROUND TRUTH =====================
+# ===================== METRIK IR =====================
 
-"""
-GROUND_TRUTH berisi daftar dokumen relevan untuk setiap query.
-
-Kamu bisa isi pakai URL artikel (paling gampang), contohnya:
-GROUND_TRUTH = {
-    "persib dewa united": [
-        "https://bola.kompas.com/read/...persib-usai-acl-2...",
-        "https://www.bola.net/indonesia/6-kemenangan-beruntun-jadi-modal-penting-persib-bandung-siap-hadapi-dewa-united..."
-    ],
-    ...
-}
-"""
-
-GROUND_TRUTH: Dict[str, List[str]] = {
-    # TODO: isi manual berdasarkan penilaianmu
-    # "persib dewa united": [
-    #     "https://bola.kompas.com/read/2025/11/10/15332998/jadwal-persib-usai-acl-2-lawan-dewa-united-dan-lion-city-sailors",
-    #     "https://www.bola.net/indonesia/6-kemenangan-beruntun-jadi-modal-penting-persib-bandung-siap-hadapi-dewa-united-di-bri-super--1b3200.html"
-    # ],
-}
-
-
-# ===================== METRIK =====================
-
-def precision_at_k(retrieved_urls: List[str], relevant_urls: List[str], k: int) -> float:
-    if k == 0:
+def precision_at_k(retrieved: List[str], relevant: List[str], k: int) -> float:
+    if k <= 0:
         return 0.0
-    retrieved_k = retrieved_urls[:k]
-    if not retrieved_k:
+    top_k = retrieved[:k]
+    if not top_k:
         return 0.0
-    rel_set = set(relevant_urls)
-    hit = sum(1 for url in retrieved_k if url in rel_set)
-    return hit / len(retrieved_k)
+
+    rel_set = set(relevant)
+    hit = sum(1 for url in top_k if url in rel_set)
+    return hit / len(top_k)
 
 
-def average_precision(retrieved_urls: List[str], relevant_urls: List[str], k: int) -> float:
-    rel_set = set(relevant_urls)
+def average_precision(retrieved: List[str], relevant: List[str]) -> float:
+    rel_set = set(relevant)
     if not rel_set:
         return 0.0
 
-    precisions = []
-    hits = 0
-    for i, url in enumerate(retrieved_urls[:k], start=1):
+    score = 0.0
+    hit = 0
+
+    for i, url in enumerate(retrieved, start=1):
         if url in rel_set:
-            hits += 1
-            precisions.append(hits / i)
+            hit += 1
+            score += hit / i
 
-    if not precisions:
-        return 0.0
-
-    return sum(precisions) / len(rel_set)
+    return score / len(rel_set)
 
 
-def mean_average_precision(all_ap: List[float]) -> float:
-    if not all_ap:
-        return 0.0
-    return sum(all_ap) / len(all_ap)
+# ===================== LOAD QUERIES & GROUND TRUTH =====================
+
+def load_queries_and_ground_truth():
+    """
+    Format queries_example.json:
+    [
+      {
+        "query": "persib bandung",
+        "relevant_urls": ["url1", "url2", ...]
+      }
+    ]
+    """
+    with open(QUERIES_FILE, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    queries: List[str] = []
+    ground_truth: Dict[str, List[str]] = {}
+
+    for item in data:
+        q = item.get("query", "").strip()
+        rel = item.get("relevant_urls", [])
+        if not q:
+            continue
+        queries.append(q)
+        ground_truth[q] = rel
+
+    return queries, ground_truth
 
 
-# ===================== EVALUASI =====================
+# ===================== EVALUASI METODE =====================
 
-def evaluate_method(method_name: str, search_func, queries: List[str]) -> Dict[str, Any]:
-    per_query = []
-    aps = []
+def evaluate_method(
+    name: str,
+    search_fn: Callable[[str, int], List[Dict[str, Any]]],
+    queries: List[str],
+    ground_truth: Dict[str, List[str]],
+    top_k: int = 10,
+) -> Dict[str, Any]:
+
+    print(f"\n=== Evaluasi {name} ===")
+    ap_scores = []
+    details = []
 
     for q in queries:
-        rel = GROUND_TRUTH.get(q, [])
-        res = search_func(q, top_k=TOP_K)
-        urls = [r["url"] for r in res]
+        rel = ground_truth.get(q, [])
+        results = search_fn(q, top_k=top_k)
 
-        p5 = precision_at_k(urls, rel, 5)
-        p10 = precision_at_k(urls, rel, 10)
-        ap = average_precision(urls, rel, TOP_K)
+        retrieved_urls = [r.get("url", "") for r in results]
 
-        aps.append(ap)
-        per_query.append(
+        ap = average_precision(retrieved_urls, rel)
+        p5 = precision_at_k(retrieved_urls, rel, 5)
+        p10 = precision_at_k(retrieved_urls, rel, 10)
+
+        ap_scores.append(ap)
+
+        details.append(
             {
                 "query": q,
-                "relevant_count": len(rel),
-                "precision@5": p5,
-                "precision@10": p10,
+                "relevant_urls": rel,
+                "retrieved_urls": retrieved_urls,
                 "AP": ap,
-                "top_urls": urls,
+                "P@5": p5,
+                "P@10": p10,
             }
         )
 
-    map_score = mean_average_precision(aps)
+        print(f"- Query: {q}")
+        print(f"  AP={ap:.4f}, P@5={p5:.4f}, P@10={p10:.4f}")
+
+    map_score = sum(ap_scores) / len(ap_scores) if ap_scores else 0.0
+
+    print(f"\nMAP {name}: {map_score:.4f}")
 
     return {
-        "method": method_name,
+        "method": name,
         "MAP": map_score,
-        "detail": per_query,
+        "per_query": details,
     }
 
 
+# ===================== MAIN =====================
+
 def main():
-    # load queries
-    with open(QUERIES_PATH, "r", encoding="utf-8") as f:
-        queries = json.load(f)
+    queries, ground_truth = load_queries_and_ground_truth()
 
-    print("Queries to evaluate:", len(queries))
+    print(f"Queries to evaluate: {len(queries)}")
 
-    tfidf_result = evaluate_method("TF-IDF", search_tfidf, queries)
-    bm25_result = evaluate_method("BM25", search_bm25, queries)
+    tfidf_result = evaluate_method("TF-IDF", search_tfidf, queries, ground_truth)
+    bm25_result = evaluate_method("BM25", search_bm25, queries, ground_truth)
 
-    results = {
+    all_results = {
         "TF-IDF": tfidf_result,
         "BM25": bm25_result,
     }
 
-    with open(RESULTS_PATH, "w", encoding="utf-8") as f:
-        json.dump(results, f, ensure_ascii=False, indent=2)
+    with open(RESULT_PATH, "w", encoding="utf-8") as f:
+        json.dump(all_results, f, ensure_ascii=False, indent=2)
 
-    print("\n=== Ringkasan ===")
-    print(f"MAP TF-IDF: {tfidf_result['MAP']:.4f}")
-    print(f"MAP BM25 : {bm25_result['MAP']:.4f}")
-    print("\nDetail disimpan di:", RESULTS_PATH)
+    print(f"\nDetail disimpan di: {RESULT_PATH}")
 
 
 if __name__ == "__main__":

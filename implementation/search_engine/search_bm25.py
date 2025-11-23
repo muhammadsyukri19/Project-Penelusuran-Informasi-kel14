@@ -1,8 +1,9 @@
 import os
-import json
 import re
 import pickle
 from typing import List, Dict, Any, Tuple
+
+import pandas as pd
 
 try:
     from rank_bm25 import BM25Okapi
@@ -13,13 +14,17 @@ except ImportError:
 
 # ===================== KONFIGURASI =====================
 
+# path relatif dari file ini ke root repo
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 DATA_DIR = os.path.join(ROOT_DIR, "data")
 INDEX_DIR = os.path.join(ROOT_DIR, "indexing")
 
-CORPUS_PATTERN_SUFFIX = "_bola_indonesia.json"
+# pakai dataset hasil preprocessing (sama seperti TF-IDF CSV)
+DATA_PATH = os.path.join(DATA_DIR, "merge-all-clean.csv")
 BM25_INDEX_PATH = os.path.join(INDEX_DIR, "bm25_index.pkl")
 
+
+# ===================== UTILITAS =====================
 
 def simple_tokenize(text: str) -> List[str]:
     """Tokenisasi sederhana untuk BM25."""
@@ -31,35 +36,70 @@ def simple_tokenize(text: str) -> List[str]:
     return [t for t in tokens if t]
 
 
-def load_corpus() -> List[Dict[str, Any]]:
-    docs = []
-    if not os.path.isdir(DATA_DIR):
-        raise FileNotFoundError(f"Folder data tidak ditemukan: {DATA_DIR}")
+def load_corpus_from_csv() -> List[Dict[str, Any]]:
+    """
+    Load korpus dari file CSV hasil preprocessing:
+    data/merge-all-clean.csv
 
-    for fname in os.listdir(DATA_DIR):
-        if not fname.endswith(CORPUS_PATTERN_SUFFIX):
+    Diasumsikan kolom minimal:
+      - 'title'
+      - 'content'
+      - 'url' (optional)
+      - 'published_at' (optional)
+    """
+    if not os.path.isfile(DATA_PATH):
+        raise FileNotFoundError(f"Dataset CSV tidak ditemukan: {DATA_PATH}")
+
+    df = pd.read_csv(DATA_PATH)
+
+    if "title" not in df.columns or "content" not in df.columns:
+        raise ValueError(
+            "CSV harus punya kolom 'title' dan 'content'. "
+            f"Kolom yang ada sekarang: {list(df.columns)}"
+        )
+
+    docs: List[Dict[str, Any]] = []
+    for i, row in df.iterrows():
+        doc = {
+            "doc_id": int(i),
+            "title": (
+                str(row.get("title", ""))
+                if not pd.isna(row.get("title", ""))
+                else ""
+            ),
+            "content": (
+                str(row.get("content", ""))
+                if not pd.isna(row.get("content", ""))
+                else ""
+            ),
+            "url": (
+                str(row.get("url", ""))
+                if "url" in df.columns and not pd.isna(row.get("url", ""))
+                else ""
+            ),
+            "published_at": (
+                str(row.get("published_at", ""))
+                if "published_at" in df.columns
+                and not pd.isna(row.get("published_at", ""))
+                else None
+            ),
+        }
+
+        # skip kalau title + content kosong
+        if not doc["title"] and not doc["content"]:
             continue
-        fpath = os.path.join(DATA_DIR, fname)
-        with open(fpath, "r", encoding="utf-8") as f:
-            try:
-                items = json.load(f)
-            except json.JSONDecodeError:
-                print(f"[WARN] Gagal parse JSON: {fpath}")
-                continue
 
-        for item in items:
-            if "title" not in item or "content" not in item:
-                continue
-            docs.append(item)
+        docs.append(doc)
 
-    for i, d in enumerate(docs):
-        d["doc_id"] = i
-
-    print(f"[BM25] Loaded {len(docs)} documents from data/")
+    print(f"[BM25] Loaded {len(docs)} documents from CSV: {DATA_PATH}")
     return docs
 
 
 def build_or_load_bm25_index() -> Tuple[BM25Okapi, List[List[str]], List[Dict[str, Any]]]:
+    """
+    Kalau index sudah ada di indexing/bm25_index.pkl → load.
+    Kalau belum → build dari merge-all-clean.csv lalu simpan.
+    """
     if BM25Okapi is None:
         raise ImportError("rank_bm25 belum diinstall. Jalankan: pip install rank-bm25")
 
@@ -71,8 +111,9 @@ def build_or_load_bm25_index() -> Tuple[BM25Okapi, List[List[str]], List[Dict[st
         print("[BM25] Index loaded from", BM25_INDEX_PATH)
         return data["bm25"], data["corpus_tokens"], data["docs"]
 
-    docs = load_corpus()
-    corpus_tokens = []
+    # build baru dari CSV
+    docs = load_corpus_from_csv()
+    corpus_tokens: List[List[str]] = []
 
     for d in docs:
         title = d.get("title", "")
@@ -97,6 +138,7 @@ def build_or_load_bm25_index() -> Tuple[BM25Okapi, List[List[str]], List[Dict[st
 
 
 def make_snippet(content: str, max_len: int = 250) -> str:
+    """Ambil potongan awal konten sebagai snippet."""
     if not content:
         return ""
     content = content.replace("\n", " ")
@@ -105,7 +147,13 @@ def make_snippet(content: str, max_len: int = 250) -> str:
     return content[:max_len].rsplit(" ", 1)[0] + "..."
 
 
+# ===================== SEARCH FUNCTION =====================
+
 def search_bm25(query: str, top_k: int = 10) -> List[Dict[str, Any]]:
+    """
+    Jalankan pencarian menggunakan BM25.
+    Return: list dict {rank, score, title, url, snippet, published_at}
+    """
     bm25, corpus_tokens, docs = build_or_load_bm25_index()
 
     q_tokens = simple_tokenize(query)
@@ -114,7 +162,7 @@ def search_bm25(query: str, top_k: int = 10) -> List[Dict[str, Any]]:
     # ambil index dokumen dengan skor tertinggi
     top_idx = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:top_k]
 
-    results = []
+    results: List[Dict[str, Any]] = []
     for rank, idx in enumerate(top_idx, start=1):
         doc = docs[idx]
         score = float(scores[idx])
@@ -134,8 +182,10 @@ def search_bm25(query: str, top_k: int = 10) -> List[Dict[str, Any]]:
     return results
 
 
+# ===================== DEMO =====================
+
 if __name__ == "__main__":
-    print("=== Demo BM25 Search ===")
+    print("=== Demo BM25 Search (CSV: merge-all-clean.csv) ===")
     if BM25Okapi is None:
         print("Install dulu: pip install rank-bm25")
         raise SystemExit
