@@ -81,18 +81,12 @@ def main():
         print(f"  AFTER:  {df['content'].iloc[sample_idx][:100]}...")
         print()
     
-    # TITLE: Basic normalization - REPLACE column
-    print(f"🔄 Processing: title (basic normalization)")
+    # TITLE: SKIP normalization (keep as is)
+    print(f"⏭️  Skipping: title (NO preprocessing - keep original)")
     
     if VERBOSE:
-        before_title = df['title'].iloc[0]
-    
-    df['title'] = df['title'].apply(remove_punctuation)
-    
-    if VERBOSE:
-        print(f"\n📝 Sample TITLE:")
-        print(f"  Before: {before_title}")
-        print(f"  After:  {df['title'].iloc[0]}")
+        print(f"\n📝 TITLE unchanged (only lowercase from step 1):")
+        print(f"  Title:  {df['title'].iloc[0][:80]}...")
         print()
     
     print(f"💾 Saving to: {STEP2_OUTPUT}")

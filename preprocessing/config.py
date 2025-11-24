@@ -20,7 +20,7 @@ FINAL_OUTPUT = os.path.join(DATA_DIR, "merge-all-clean.csv")
 STATS_OUTPUT = os.path.join(DATA_DIR, "preprocessing_stats.json")
 
 # ===================== PREPROCESSING PARAMETERS =====================
-TEXT_COLUMNS = ["title", "content"]
+TEXT_COLUMNS = ["content"]
 REMOVE_NEWLINES = True  # PENTING: Hapus \n, \r, \t
 LOWERCASE = True
 REMOVE_PUNCTUATION = True

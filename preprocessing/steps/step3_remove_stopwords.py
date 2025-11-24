@@ -82,18 +82,12 @@ def main():
         print(f"  AFTER:  {df['content'].iloc[sample_idx][:100]}...")
         print()
     
-    # TITLE: Minimal stopword removal - REPLACE column
-    print(f"\n🔄 Processing: title (minimal stopwords)")
+    # TITLE: SKIP stopword removal (keep as is)
+    print(f"\n⏭️  Skipping: title (NO preprocessing - keep original)")
     
     if VERBOSE:
-        before_title = df['title'].iloc[0]
-    
-    df['title'] = df['title'].apply(lambda x: remove_stopwords(x, 1))
-    
-    if VERBOSE:
-        print(f"\n📝 Sample TITLE:")
-        print(f"  Before: {before_title}")
-        print(f"  After:  {df['title'].iloc[0]}")
+        print(f"\n📝 TITLE unchanged:")
+        print(f"  Title: {df['title'].iloc[0][:80]}...")
         print()
     
     print(f"💾 Saving to: {STEP3_OUTPUT}")

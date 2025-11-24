@@ -1,12 +1,12 @@
 {
   "overview": {
     "total_documents": 376,
-    "vocabulary_size": 6457,
-    "avg_terms_per_document": 338.52,
-    "total_index_entries": 69692
+    "vocabulary_size": 7900,
+    "avg_terms_per_document": 339.77,
+    "total_index_entries": 73842
   },
   "term_statistics": {
-    "avg_documents_per_term": 10.79,
+    "avg_documents_per_term": 9.35,
     "max_documents_per_term": 323,
     "min_documents_per_term": 1,
     "most_common_terms": [
@@ -36,14 +36,14 @@
       },
       {
         "term": "sebut",
-        "doc_count": 280
-      },
-      {
-        "term": "hasil",
-        "doc_count": 265
+        "doc_count": 279
       },
       {
         "term": "2025",
+        "doc_count": 264
+      },
+      {
+        "term": "hasil",
         "doc_count": 264
       },
       {
@@ -55,20 +55,20 @@
         "doc_count": 255
       },
       {
-        "term": "menang",
-        "doc_count": 252
-      },
-      {
         "term": "akhir",
         "doc_count": 251
       },
       {
+        "term": "menang",
+        "doc_count": 251
+      },
+      {
         "term": "lawan",
-        "doc_count": 250
+        "doc_count": 247
       },
       {
         "term": "vs",
-        "doc_count": 232
+        "doc_count": 228
       },
       {
         "term": "timnas",
@@ -87,13 +87,13 @@
         "doc_count": 219
       },
       {
-        "term": "gol",
-        "doc_count": 211
+        "term": "sama",
+        "doc_count": 210
       }
     ]
   },
   "document_statistics": {
-    "avg_document_length": 338.52,
+    "avg_document_length": 339.77,
     "max_document_length": 656,
     "min_document_length": 154,
     "source_distribution": {
@@ -103,9 +103,25 @@
     }
   },
   "tfidf_statistics": {
-    "avg_tfidf_score": 4.193786,
-    "max_tfidf_score": 24.373232,
+    "avg_tfidf_score": 4.183691,
+    "max_tfidf_score": 24.124955,
     "top_discriminative_terms": [
+      {
+        "term": "RESMI:",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "Kontrak",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "2028,",
+        "idf_score": 6.2391
+      },
+      {
+        "term": "Ngebet",
+        "idf_score": 6.2391
+      },
       {
         "term": "2337",
         "idf_score": 6.2391
@@ -167,30 +183,14 @@
         "idf_score": 6.2391
       },
       {
-        "term": "adaptif",
-        "idf_score": 6.2391
-      },
-      {
-        "term": "2311",
-        "idf_score": 6.2391
-      },
-      {
-        "term": "terjemah",
-        "idf_score": 6.2391
-      },
-      {
-        "term": "gelombang",
-        "idf_score": 6.2391
-      },
-      {
-        "term": "2250",
+        "term": "Maksimalkan",
         "idf_score": 6.2391
       }
     ]
   },
   "metadata": {
     "total_documents": 376,
-    "vocab_size": 6457,
+    "vocab_size": 7900,
     "sublinear_tf": true,
     "smooth_idf": true
   }
