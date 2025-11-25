@@ -104,18 +104,12 @@ def main():
         print(f"  {df['content'].iloc[sample_idx][:200]}...")
         print()
     
-    # Title: basic cleaning saja (sudah rapi) - REPLACE column
-    print(f"🔄 Processing column: title (basic only)")
+    # Title: TIDAK DIPROSES (keep original)
+    print(f"⏭️  Skipping column: title (NO preprocessing - keep original)")
     
     if VERBOSE:
-        original_title = df['title'].iloc[0]
-    
-    df['title'] = df['title'].fillna('').str.lower().str.strip()
-    
-    if VERBOSE:
-        print(f"\n📝 Sample TITLE:")
-        print(f"  Original: {original_title}")
-        print(f"  Cleaned:  {df['title'].iloc[0]}")
+        print(f"\n📝 TITLE unchanged (original):")
+        print(f"  Title: {df['title'].iloc[0]}")
         print()
     
     # Save

@@ -114,18 +114,12 @@ def main():
                 print(f"    {i}. {b} → {a}")
         print()
     
-    # TITLE: Stemming - REPLACE column
-    print(f"🔄 Processing: title (stemming)")
+    # TITLE: SKIP stemming (keep as is)
+    print(f"\n⏭️  Skipping: title (NO preprocessing - keep original)")
     
     if VERBOSE:
-        before_title = df['title'].iloc[0]
-    
-    df['title'] = df['title'].apply(stem_text)
-    
-    if VERBOSE:
-        print(f"\n📝 Sample TITLE:")
-        print(f"  Before: {before_title}")
-        print(f"  After:  {df['title'].iloc[0]}")
+        print(f"\n📝 TITLE unchanged:")
+        print(f"  Title: {df['title'].iloc[0][:80]}...")
         print()
     
     # Save to step4 output (akan diproses step5 finalize)
