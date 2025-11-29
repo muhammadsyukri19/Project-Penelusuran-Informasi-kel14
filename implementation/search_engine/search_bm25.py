@@ -63,9 +63,9 @@ def load_corpus_from_csv() -> List[Dict[str, Any]]:
         doc = {
             "doc_id": int(i),
             "title": (
-                str(row.get("title", ""))
-                if not pd.isna(row.get("title", ""))
-                else ""
+                str(row.get("Title", ""))
+                if "Title" in df.columns and not pd.isna(row.get("Title", ""))
+                else str(row.get("title", "")) if not pd.isna(row.get("title", "")) else ""
             ),
             "content": (
                 str(row.get("content", ""))
@@ -75,6 +75,16 @@ def load_corpus_from_csv() -> List[Dict[str, Any]]:
             "url": (
                 str(row.get("url", ""))
                 if "url" in df.columns and not pd.isna(row.get("url", ""))
+                else ""
+            ),
+            "main_image": (
+                str(row.get("main_image", ""))
+                if "main_image" in df.columns and not pd.isna(row.get("main_image", ""))
+                else ""
+            ),
+            "source": (
+                str(row.get("source", ""))
+                if "source" in df.columns and not pd.isna(row.get("source", ""))
                 else ""
             ),
             "published_at": (
@@ -174,6 +184,8 @@ def search_bm25(query: str, top_k: int = 10) -> List[Dict[str, Any]]:
                 "title": doc.get("title", ""),
                 "url": doc.get("url", ""),
                 "snippet": make_snippet(doc.get("content", "")),
+                "main_image": doc.get("main_image", ""),
+                "source": doc.get("source", ""),
                 "published_at": doc.get("published_at"),
                 "doc_id": doc.get("doc_id", idx),
             }

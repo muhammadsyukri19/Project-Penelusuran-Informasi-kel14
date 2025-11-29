@@ -52,7 +52,10 @@ def format_search_result(result, algorithm):
         "doc_id": result.get("doc_id"),
         "title": result.get("title", ""),
         "snippet": result.get("snippet", ""),
+        "content": result.get("snippet", ""),
         "url": result.get("url", ""),
+        "main_image": result.get("main_image", ""),
+        "source": result.get("source", ""),
         "published_at": result.get("published_at"),
         "score": round(float(result.get("score", 0)), 4),
         "rank": result.get("rank"),
@@ -250,9 +253,16 @@ def get_document(doc_id):
         
         row = df.iloc[doc_id]
         
+        # Gunakan Title (huruf besar original) kalau ada, fallback ke title (lowercase)
+        title_value = ""
+        if "Title" in df.columns and not pd.isna(row.get("Title", "")):
+            title_value = str(row.get("Title", ""))
+        elif not pd.isna(row.get("title", "")):
+            title_value = str(row.get("title", ""))
+        
         return jsonify({
             "doc_id": doc_id,
-            "title": str(row.get("title", "")) if not pd.isna(row.get("title", "")) else "",
+            "title": title_value,
             "content": str(row.get("content", "")) if not pd.isna(row.get("content", "")) else "",
             "url": str(row.get("url", "")) if not pd.isna(row.get("url", "")) else "",
             "source": str(row.get("source", "")) if not pd.isna(row.get("source", "")) else "",
