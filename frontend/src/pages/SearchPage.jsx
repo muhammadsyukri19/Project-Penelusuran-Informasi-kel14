@@ -166,11 +166,19 @@ function SearchPage() {
                       >
                         {result.main_image && (
                           <img
-                            src={result.main_image}
+                            src={`http://localhost:5000/api/image-proxy?url=${encodeURIComponent(
+                              result.main_image
+                            )}`}
                             alt={result.title}
-                            className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                            className="w-24 h-24 object-cover rounded-lg flex-shrink-0 bg-slate-200"
                             onError={(e) => {
-                              e.target.style.display = "none";
+                              console.log(
+                                "TF-IDF Image failed:",
+                                result.source,
+                                result.main_image
+                              );
+                              e.target.src =
+                                'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23e2e8f0"/><text x="50" y="50" text-anchor="middle" dy=".3em" fill="%2394a3b8" font-family="sans-serif" font-size="12">No Image</text></svg>';
                             }}
                           />
                         )}
@@ -233,11 +241,19 @@ function SearchPage() {
                       >
                         {result.main_image && (
                           <img
-                            src={result.main_image}
+                            src={`http://localhost:5000/api/image-proxy?url=${encodeURIComponent(
+                              result.main_image
+                            )}`}
                             alt={result.title}
-                            className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                            className="w-24 h-24 object-cover rounded-lg flex-shrink-0 bg-slate-200"
                             onError={(e) => {
-                              e.target.style.display = "none";
+                              console.log(
+                                "BM25 Image failed:",
+                                result.source,
+                                result.main_image
+                              );
+                              e.target.src =
+                                'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23e2e8f0"/><text x="50" y="50" text-anchor="middle" dy=".3em" fill="%2394a3b8" font-family="sans-serif" font-size="12">No Image</text></svg>';
                             }}
                           />
                         )}

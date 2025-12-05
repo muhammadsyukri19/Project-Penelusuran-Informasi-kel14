@@ -20,7 +20,7 @@ DATA_DIR = os.path.join(ROOT_DIR, "data")
 INDEX_DIR = os.path.join(ROOT_DIR, "indexing")
 
 # pakai dataset hasil preprocessing (sama seperti TF-IDF CSV)
-DATA_PATH = os.path.join(DATA_DIR, "merge-all-clean.csv")
+DATA_PATH = os.path.join(DATA_DIR, "merge-all-dual-storage.csv")
 BM25_INDEX_PATH = os.path.join(INDEX_DIR, "bm25_index.pkl")
 
 
@@ -61,36 +61,20 @@ def load_corpus_from_csv() -> List[Dict[str, Any]]:
     docs: List[Dict[str, Any]] = []
     for i, row in df.iterrows():
         doc = {
-            "doc_id": int(i),
-            "title": (
-                str(row.get("Title", ""))
-                if "Title" in df.columns and not pd.isna(row.get("Title", ""))
-                else str(row.get("title", "")) if not pd.isna(row.get("title", "")) else ""
-            ),
-            "content": (
-                str(row.get("content", ""))
-                if not pd.isna(row.get("content", ""))
-                else ""
-            ),
-            "url": (
-                str(row.get("url", ""))
-                if "url" in df.columns and not pd.isna(row.get("url", ""))
-                else ""
-            ),
-            "main_image": (
-                str(row.get("main_image", ""))
-                if "main_image" in df.columns and not pd.isna(row.get("main_image", ""))
-                else ""
-            ),
-            "source": (
-                str(row.get("source", ""))
-                if "source" in df.columns and not pd.isna(row.get("source", ""))
-                else ""
-            ),
+            "doc_id": str(row.get("doc_id", i)) if "doc_id" in df.columns else int(i),
+            # ORIGINAL data (untuk display)
+            "title": str(row.get("title", "")) if not pd.isna(row.get("title", "")) else "",
+            "content": str(row.get("content", "")) if not pd.isna(row.get("content", "")) else "",
+            # CLEAN data (untuk indexing)
+            "title_clean": str(row.get("title_clean", "")) if not pd.isna(row.get("title_clean", "")) else "",
+            "content_clean": str(row.get("content_clean", "")) if not pd.isna(row.get("content_clean", "")) else "",
+            # Metadata
+            "url": str(row.get("url", "")) if "url" in df.columns and not pd.isna(row.get("url", "")) else "",
+            "main_image": str(row.get("main_image", "")) if "main_image" in df.columns and not pd.isna(row.get("main_image", "")) else "",
+            "source": str(row.get("source", "")) if "source" in df.columns and not pd.isna(row.get("source", "")) else "",
             "published_at": (
                 str(row.get("published_at", ""))
-                if "published_at" in df.columns
-                and not pd.isna(row.get("published_at", ""))
+                if "published_at" in df.columns and not pd.isna(row.get("published_at", ""))
                 else None
             ),
         }
@@ -126,9 +110,9 @@ def build_or_load_bm25_index() -> Tuple[BM25Okapi, List[List[str]], List[Dict[st
     corpus_tokens: List[List[str]] = []
 
     for d in docs:
-        title = d.get("title", "")
-        content = d.get("content", "")
-        full_text = f"{title}\n{content}"
+        title_clean = d.get("title_clean", "")
+        content_clean = d.get("content_clean", "")
+        full_text = f"{title_clean}\n{content_clean}"
         tokens = simple_tokenize(full_text)
         corpus_tokens.append(tokens)
 

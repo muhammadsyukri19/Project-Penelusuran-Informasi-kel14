@@ -9,12 +9,14 @@ function ComparePage() {
   const [searchQuery, setSearchQuery] = useState(query);
   const [loading, setLoading] = useState(true);
   const [comparisonData, setComparisonData] = useState(null);
+  const [evaluationData, setEvaluationData] = useState(null);
   const [error, setError] = useState(null);
   const [selectedDoc, setSelectedDoc] = useState(null);
 
   useEffect(() => {
     if (query) {
       fetchDetailedComparison(query);
+      fetchEvaluation(query);
     }
   }, [query]);
 
@@ -41,6 +43,28 @@ function ComparePage() {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchEvaluation = async (searchQuery) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/evaluate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: searchQuery,
+          top_k: 10,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setEvaluationData(data);
+      }
+    } catch (err) {
+      console.error("Evaluation failed:", err);
     }
   };
 
@@ -240,6 +264,189 @@ function ComparePage() {
                 </div>
               </div>
             </div>
+
+            {/* Evaluation Metrics Section */}
+            {evaluationData && (
+              <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-slate-300 overflow-hidden">
+                <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-4">
+                  <h3 className="text-xl font-bold">
+                    Evaluasi Kinerja Algoritma
+                  </h3>
+                  <p className="text-sm text-purple-100 mt-1">
+                    Precision, Recall, F1-Score, dan Mean Average Precision
+                    (MAP)
+                  </p>
+                </div>
+
+                <div className="p-6">
+                  {/* MAP Comparison */}
+                  <div className="grid md:grid-cols-2 gap-6 mb-6">
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="text-lg font-bold text-slate-800">
+                          TF-IDF
+                        </h4>
+                        <div className="px-3 py-1 bg-blue-500 text-white text-xs font-semibold rounded-full">
+                          MAP: {evaluationData.tfidf?.map?.toFixed(4) || "N/A"}
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between py-2 border-b border-blue-200">
+                          <span className="text-slate-700">Precision@5:</span>
+                          <span className="font-semibold text-slate-800">
+                            {evaluationData.tfidf?.["precision@5"]?.toFixed(
+                              4
+                            ) || "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-blue-200">
+                          <span className="text-slate-700">Recall@5:</span>
+                          <span className="font-semibold text-slate-800">
+                            {evaluationData.tfidf?.["recall@5"]?.toFixed(4) ||
+                              "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-blue-200">
+                          <span className="text-slate-700">F1-Score@5:</span>
+                          <span className="font-semibold text-slate-800">
+                            {evaluationData.tfidf?.["f1@5"]?.toFixed(4) ||
+                              "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span className="text-slate-700">Precision@10:</span>
+                          <span className="font-semibold text-slate-800">
+                            {evaluationData.tfidf?.["precision@10"]?.toFixed(
+                              4
+                            ) || "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span className="text-slate-700">Recall@10:</span>
+                          <span className="font-semibold text-slate-800">
+                            {evaluationData.tfidf?.["recall@10"]?.toFixed(4) ||
+                              "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span className="text-slate-700">F1-Score@10:</span>
+                          <span className="font-semibold text-slate-800">
+                            {evaluationData.tfidf?.["f1@10"]?.toFixed(4) ||
+                              "N/A"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="text-lg font-bold text-slate-800">
+                          BM25
+                        </h4>
+                        <div className="px-3 py-1 bg-primary text-white text-xs font-semibold rounded-full">
+                          MAP: {evaluationData.bm25?.map?.toFixed(4) || "N/A"}
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between py-2 border-b border-green-200">
+                          <span className="text-slate-700">Precision@5:</span>
+                          <span className="font-semibold text-slate-800">
+                            {evaluationData.bm25?.["precision@5"]?.toFixed(4) ||
+                              "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-green-200">
+                          <span className="text-slate-700">Recall@5:</span>
+                          <span className="font-semibold text-slate-800">
+                            {evaluationData.bm25?.["recall@5"]?.toFixed(4) ||
+                              "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between py-2 border-b border-green-200">
+                          <span className="text-slate-700">F1-Score@5:</span>
+                          <span className="font-semibold text-slate-800">
+                            {evaluationData.bm25?.["f1@5"]?.toFixed(4) || "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span className="text-slate-700">Precision@10:</span>
+                          <span className="font-semibold text-slate-800">
+                            {evaluationData.bm25?.["precision@10"]?.toFixed(
+                              4
+                            ) || "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span className="text-slate-700">Recall@10:</span>
+                          <span className="font-semibold text-slate-800">
+                            {evaluationData.bm25?.["recall@10"]?.toFixed(4) ||
+                              "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span className="text-slate-700">F1-Score@10:</span>
+                          <span className="font-semibold text-slate-800">
+                            {evaluationData.bm25?.["f1@10"]?.toFixed(4) ||
+                              "N/A"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Winner Badge */}
+                  {evaluationData.comparison && (
+                    <div className="bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 rounded-xl p-4">
+                      <div className="flex items-center justify-center gap-3">
+                        <svg
+                          className="w-6 h-6 text-amber-600"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <span className="text-lg font-bold text-slate-800">
+                          Winner (MAP):{" "}
+                          <span className="text-amber-600">
+                            {evaluationData.comparison.winner_map}
+                          </span>
+                        </span>
+                        <span className="text-sm text-slate-600">
+                          (Diff:{" "}
+                          {evaluationData.comparison.map_difference?.toFixed(4)}
+                          )
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Metrics Explanation */}
+                  <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <h5 className="text-sm font-bold text-slate-800 mb-2">
+                      Penjelasan Metrik:
+                    </h5>
+                    <ul className="text-xs text-slate-700 space-y-1">
+                      <li>
+                        <strong>Precision@K:</strong> Proporsi dokumen relevan
+                        dari K hasil teratas yang diambil
+                      </li>
+                      <li>
+                        <strong>Recall@K:</strong> Proporsi dokumen relevan yang
+                        berhasil ditemukan dari total dokumen relevan
+                      </li>
+                      <li>
+                        <strong>F1-Score@K:</strong> Harmonic mean dari
+                        Precision dan Recall (2 × P × R / (P + R))
+                      </li>
+                      <li>
+                        <strong>MAP:</strong> Mean Average Precision - rata-rata
+                        dari Average Precision untuk semua query
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Full Results Comparison Table */}
             <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-slate-300 overflow-hidden">

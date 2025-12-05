@@ -10,7 +10,7 @@ INDEX_DIR = os.path.join(ROOT_DIR, "indexing")
 SEARCH_ENGINE_DIR = os.path.join(ROOT_DIR, "implementation", "search_engine")
 
 # Dataset
-DATA_PATH = os.path.join(DATA_DIR, "merge-all-clean.csv")
+DATA_PATH = os.path.join(DATA_DIR, "merge-all-dual-storage.csv")
 JSON_DATA_PATH = os.path.join(DATA_DIR, "index", "documents.json")
 
 # Index files

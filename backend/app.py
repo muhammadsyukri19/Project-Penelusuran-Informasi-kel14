@@ -3,12 +3,13 @@ Flask Backend API for Indonesian News Search Engine
 Supports TF-IDF and BM25 algorithms
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import sys
 import os
 import time
 import logging
+import requests
 
 # Add paths
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -88,10 +89,50 @@ def home():
             "health": "/api/health",
             "search": "/api/search",
             "compare": "/api/search/compare",
+            "evaluate": "/api/evaluate",
             "document": "/api/document/<doc_id>",
-            "stats": "/api/stats"
+            "stats": "/api/stats",
+            "image_proxy": "/api/image-proxy?url=<image_url>"
         }
     })
+
+@app.route("/api/image-proxy", methods=["GET"])
+def image_proxy():
+    """
+    Proxy untuk fetch image dari CDN yang block CORS
+    Usage: /api/image-proxy?url=https://cdns.klimg.com/...
+    """
+    try:
+        image_url = request.args.get('url')
+        if not image_url:
+            return jsonify({"error": "URL parameter required"}), 400
+        
+        # Fetch image dengan headers yang proper
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Referer': 'https://www.bola.net/',
+            'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+        }
+        
+        response = requests.get(image_url, headers=headers, timeout=10, stream=True)
+        
+        if response.status_code == 200:
+            # Return image dengan proper content-type
+            return Response(
+                response.content,
+                mimetype=response.headers.get('Content-Type', 'image/jpeg'),
+                headers={
+                    'Cache-Control': 'public, max-age=3600',
+                    'Access-Control-Allow-Origin': '*'
+                }
+            )
+        else:
+            logger.warning(f"Image fetch failed: {response.status_code} for {image_url}")
+            return jsonify({"error": f"Failed to fetch image: {response.status_code}"}), response.status_code
+            
+    except Exception as e:
+        logger.error(f"Image proxy error: {e}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/api/health", methods=["GET"])
 def health_check():
@@ -341,6 +382,165 @@ def get_all_documents():
         
     except Exception as e:
         logger.error(f"Get documents error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/evaluate", methods=["POST"])
+def evaluate_algorithms():
+    """
+    Evaluate TF-IDF and BM25 algorithms using automatic overlap-based metrics
+    No ground truth needed - uses top-k overlap as pseudo-relevance
+    
+    Body:
+    {
+        "query": "persija",
+        "top_k": 10
+    }
+    """
+    try:
+        if not SEARCH_AVAILABLE:
+            return jsonify({"error": "Search engines not available"}), 503
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Request body required"}), 400
+        
+        query = data.get("query", "")
+        if not query:
+            return jsonify({"error": "Query required"}), 400
+        
+        top_k = data.get("top_k", 10)
+        
+        # Run both searches
+        tfidf_results = search_tfidf(query=query, top_k=top_k)
+        bm25_results = search_bm25(query=query, top_k=top_k)
+        
+        # Extract doc_ids
+        tfidf_ids = [r["doc_id"] for r in tfidf_results]
+        bm25_ids = [r["doc_id"] for r in bm25_results]
+        
+        # Use Reciprocal Rank Fusion (RRF) untuk determine pseudo-relevant
+        # RRF Score = sum(1 / (k + rank)) untuk setiap algoritma
+        k_rrf = 60  # Constant untuk RRF
+        rrf_scores = {}
+        
+        # Add TF-IDF ranks
+        for rank, doc_id in enumerate(tfidf_ids, 1):
+            rrf_scores[doc_id] = rrf_scores.get(doc_id, 0) + 1 / (k_rrf + rank)
+        
+        # Add BM25 ranks
+        for rank, doc_id in enumerate(bm25_ids, 1):
+            rrf_scores[doc_id] = rrf_scores.get(doc_id, 0) + 1 / (k_rrf + rank)
+        
+        # Top-7 docs by RRF score sebagai pseudo-relevant (lebih strict)
+        sorted_docs = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)
+        pseudo_relevant = set([doc_id for doc_id, score in sorted_docs[:7]])
+        
+        # Calculate metrics for TF-IDF
+        tfidf_top10_set = set(tfidf_ids[:10])
+        tfidf_precision_10 = len(tfidf_top10_set & pseudo_relevant) / 10 if top_k >= 10 else 0
+        tfidf_recall_10 = len(tfidf_top10_set & pseudo_relevant) / len(pseudo_relevant) if pseudo_relevant else 0
+        tfidf_f1_10 = (2 * tfidf_precision_10 * tfidf_recall_10 / (tfidf_precision_10 + tfidf_recall_10)) if (tfidf_precision_10 + tfidf_recall_10) > 0 else 0
+        
+        tfidf_top5_set = set(tfidf_ids[:5])
+        tfidf_precision_5 = len(tfidf_top5_set & pseudo_relevant) / 5
+        tfidf_recall_5 = len(tfidf_top5_set & pseudo_relevant) / len(pseudo_relevant) if pseudo_relevant else 0
+        tfidf_f1_5 = (2 * tfidf_precision_5 * tfidf_recall_5 / (tfidf_precision_5 + tfidf_recall_5)) if (tfidf_precision_5 + tfidf_recall_5) > 0 else 0
+        
+        # Calculate metrics for BM25
+        bm25_top10_set = set(bm25_ids[:10])
+        bm25_precision_10 = len(bm25_top10_set & pseudo_relevant) / 10 if top_k >= 10 else 0
+        bm25_recall_10 = len(bm25_top10_set & pseudo_relevant) / len(pseudo_relevant) if pseudo_relevant else 0
+        bm25_f1_10 = (2 * bm25_precision_10 * bm25_recall_10 / (bm25_precision_10 + bm25_recall_10)) if (bm25_precision_10 + bm25_recall_10) > 0 else 0
+        
+        bm25_top5_set = set(bm25_ids[:5])
+        bm25_precision_5 = len(bm25_top5_set & pseudo_relevant) / 5
+        bm25_recall_5 = len(bm25_top5_set & pseudo_relevant) / len(pseudo_relevant) if pseudo_relevant else 0
+        bm25_f1_5 = (2 * bm25_precision_5 * bm25_recall_5 / (bm25_precision_5 + bm25_recall_5)) if (bm25_precision_5 + bm25_recall_5) > 0 else 0
+        
+        # Calculate MAP (simplified: average precision at each relevant doc position)
+        def calculate_ap(retrieved_ids, relevant_set):
+            if not relevant_set:
+                return 0.0
+            precision_sum = 0.0
+            relevant_count = 0
+            for i, doc_id in enumerate(retrieved_ids, 1):
+                if doc_id in relevant_set:
+                    relevant_count += 1
+                    precision_at_i = relevant_count / i
+                    precision_sum += precision_at_i
+            return precision_sum / len(relevant_set) if len(relevant_set) > 0 else 0.0
+        
+        tfidf_map = calculate_ap(tfidf_ids, pseudo_relevant)
+        bm25_map = calculate_ap(bm25_ids, pseudo_relevant)
+        
+        # Calculate NDCG-like score berdasarkan position relevance
+        def calculate_dcg(retrieved_ids, relevant_set):
+            dcg = 0.0
+            for i, doc_id in enumerate(retrieved_ids[:10], 1):
+                if doc_id in relevant_set:
+                    # Relevance score based on RRF
+                    rel = rrf_scores.get(doc_id, 0) * 10  # Scale up
+                    dcg += rel / (i + 1)  # Discounted by position
+            return dcg
+        
+        tfidf_dcg = calculate_dcg(tfidf_ids, pseudo_relevant)
+        bm25_dcg = calculate_dcg(bm25_ids, pseudo_relevant)
+        
+        # Determine winner berdasarkan multiple metrics
+        map_diff = abs(tfidf_map - bm25_map)
+        dcg_diff = abs(tfidf_dcg - bm25_dcg)
+        
+        # Winner: consider DCG difference jika MAP sama
+        if map_diff < 0.01:
+            if dcg_diff < 0.01:
+                winner_map = "Tie"
+            elif tfidf_dcg > bm25_dcg:
+                winner_map = "TF-IDF"
+            else:
+                winner_map = "BM25"
+        elif tfidf_map > bm25_map:
+            winner_map = "TF-IDF"
+        else:
+            winner_map = "BM25"
+        
+        # Calculate overlap untuk additional insights
+        tfidf_top5 = set(tfidf_ids[:5])
+        bm25_top5 = set(bm25_ids[:5])
+        overlap_top5 = len(tfidf_top5 & bm25_top5)
+        
+        return jsonify({
+            "query": query,
+            "tfidf": {
+                "algorithm": "TF-IDF",
+                "map": round(tfidf_map, 4),
+                "precision@5": round(tfidf_precision_5, 4),
+                "recall@5": round(tfidf_recall_5, 4),
+                "f1@5": round(tfidf_f1_5, 4),
+                "precision@10": round(tfidf_precision_10, 4),
+                "recall@10": round(tfidf_recall_10, 4),
+                "f1@10": round(tfidf_f1_10, 4)
+            },
+            "bm25": {
+                "algorithm": "BM25",
+                "map": round(bm25_map, 4),
+                "precision@5": round(bm25_precision_5, 4),
+                "recall@5": round(bm25_recall_5, 4),
+                "f1@5": round(bm25_f1_5, 4),
+                "precision@10": round(bm25_precision_10, 4),
+                "recall@10": round(bm25_recall_10, 4),
+                "f1@10": round(bm25_f1_10, 4)
+            },
+            "comparison": {
+                "winner_map": winner_map,
+                "map_difference": abs(round(tfidf_map - bm25_map, 4)),
+                "pseudo_relevant_docs": len(pseudo_relevant),
+                "overlap_top5": overlap_top5,
+                "ranking_similarity": round(overlap_top5 / 5 * 100, 2)
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Evaluation error: {e}")
         return jsonify({"error": str(e)}), 500
 
 # ===================== ERROR HANDLERS =====================

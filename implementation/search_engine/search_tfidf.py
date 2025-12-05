@@ -16,7 +16,7 @@ DATA_DIR = os.path.join(ROOT_DIR, "data")
 INDEX_DIR = os.path.join(ROOT_DIR, "indexing")
 
 # pakai dataset hasil preprocessing
-DATA_PATH = os.path.join(DATA_DIR, "merge-all-clean.csv")
+DATA_PATH = os.path.join(DATA_DIR, "merge-all-dual-storage.csv")
 
 TFIDF_INDEX_PATH = os.path.join(INDEX_DIR, "tfidf_index.pkl")
 
@@ -34,14 +34,15 @@ def simple_preprocess(text: str) -> str:
 
 def load_corpus_from_csv() -> List[Dict[str, Any]]:
     """
-    Load korpus dari file CSV hasil preprocessing:
-    data/merge-all-clean.csv
+    Load korpus dari file CSV dengan DUAL STORAGE:
+    data/merge-all-dual-storage.csv
 
-    Diasumsikan kolom minimal:
-      - 'title'
-      - 'content'
-      - 'url'           (optional, kalau tidak ada akan dikosongkan)
-      - 'published_at'  (optional)
+    Kolom:
+      - 'title' (ORIGINAL untuk display)
+      - 'title_clean' (CLEAN untuk indexing)
+      - 'content' (ORIGINAL untuk display)
+      - 'content_clean' (CLEAN untuk indexing)
+      - 'url', 'main_image', 'source' (metadata)
     """
     if not os.path.isfile(DATA_PATH):
         raise FileNotFoundError(f"Dataset CSV tidak ditemukan: {DATA_PATH}")
@@ -49,18 +50,25 @@ def load_corpus_from_csv() -> List[Dict[str, Any]]:
     df = pd.read_csv(DATA_PATH)
 
     # cek kolom wajib
-    if "title" not in df.columns or "content" not in df.columns:
+    required_cols = ['title', 'content', 'title_clean', 'content_clean']
+    missing = [col for col in required_cols if col not in df.columns]
+    if missing:
         raise ValueError(
-            "CSV harus punya kolom 'title' dan 'content'. "
-            f"Kolom yang ada sekarang: {list(df.columns)}"
+            f"CSV harus punya kolom: {required_cols}. "
+            f"Kolom yang hilang: {missing}"
         )
 
     docs: List[Dict[str, Any]] = []
     for i, row in df.iterrows():
         doc = {
-            "doc_id": int(i),
-            "title": str(row.get("Title", "")) if "Title" in df.columns and not pd.isna(row.get("Title", "")) else str(row.get("title", "")) if not pd.isna(row.get("title", "")) else "",
+            "doc_id": str(row.get("doc_id", i)) if "doc_id" in df.columns else int(i),
+            # ORIGINAL data (untuk display)
+            "title": str(row.get("title", "")) if not pd.isna(row.get("title", "")) else "",
             "content": str(row.get("content", "")) if not pd.isna(row.get("content", "")) else "",
+            # CLEAN data (untuk indexing)
+            "title_clean": str(row.get("title_clean", "")) if not pd.isna(row.get("title_clean", "")) else "",
+            "content_clean": str(row.get("content_clean", "")) if not pd.isna(row.get("content_clean", "")) else "",
+            # Metadata
             "url": str(row.get("url", "")) if "url" in df.columns and not pd.isna(row.get("url", "")) else "",
             "main_image": str(row.get("main_image", "")) if "main_image" in df.columns and not pd.isna(row.get("main_image", "")) else "",
             "source": str(row.get("source", "")) if "source" in df.columns and not pd.isna(row.get("source", "")) else "",
@@ -98,9 +106,10 @@ def build_or_load_tfidf_index() -> Tuple[TfidfVectorizer, Any, List[Dict[str, An
     docs = load_corpus_from_csv()
     texts = []
     for d in docs:
-        title = d.get("title", "")
-        content = d.get("content", "")
-        full_text = f"{title}\n{content}"
+        # Gunakan CLEAN data untuk indexing
+        title_clean = d.get("title_clean", "")
+        content_clean = d.get("content_clean", "")
+        full_text = f"{title_clean}\n{content_clean}"
         texts.append(simple_preprocess(full_text))
 
     vectorizer = TfidfVectorizer(
@@ -156,9 +165,10 @@ def search_tfidf(query: str, top_k: int = 10) -> List[Dict[str, Any]]:
             {
                 "rank": rank,
                 "score": score,
+                # Return ORIGINAL data untuk display
                 "title": doc.get("title", ""),
                 "url": doc.get("url", ""),
-                "snippet": make_snippet(doc.get("content", "")),
+                "snippet": make_snippet(doc.get("content", "")),  # ORIGINAL content
                 "main_image": doc.get("main_image", ""),
                 "source": doc.get("source", ""),
                 "published_at": doc.get("published_at"),
