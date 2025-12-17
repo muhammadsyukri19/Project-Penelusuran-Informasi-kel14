@@ -27,16 +27,19 @@ function ComparePage() {
 
     try {
       // Minimum loading time 2 detik untuk menampilkan loading animation
-      const [response] = await Promise.all([
-        fetch("http://localhost:5000/api/search/compare", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ query: searchQuery }),
-        }),
-        new Promise((resolve) => setTimeout(resolve, 2000)),
-      ]);
+const API_BASE = import.meta.env.VITE_API_URL; // pastikan ada di atas dalam component
+
+  const [response] = await Promise.all([
+    fetch(`${API_BASE}/api/search/compare`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query: searchQuery }),
+    }),
+    new Promise((resolve) => setTimeout(resolve, 2000)),
+]);
+
 
       if (!response.ok) {
         throw new Error("Failed to fetch results");
@@ -51,27 +54,29 @@ function ComparePage() {
     }
   };
 
-  const fetchEvaluation = async (searchQuery) => {
-    try {
-      const response = await fetch("http://localhost:5000/api/evaluate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: searchQuery,
-          top_k: 10,
-        }),
-      });
+const API_BASE = import.meta.env.VITE_API_URL; // kalau belum ada di file ini, tambahkan di atas dalam component
 
-      if (response.ok) {
-        const data = await response.json();
-        setEvaluationData(data);
-      }
-    } catch (err) {
-      console.error("Evaluation failed:", err);
+const fetchEvaluation = async (searchQuery) => {
+  try {
+    const response = await fetch(`${API_BASE}/api/evaluate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: searchQuery,
+        top_k: 10,
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setEvaluationData(data);
     }
-  };
+  } catch (err) {
+    console.error("Evaluation failed:", err);
+  }
+};
 
   const handleSearch = (e) => {
     e.preventDefault();
