@@ -24,11 +24,9 @@ function SearchPage() {
     setError(null);
 
     try {
-      const API_BASE = "https://nonsovereignly-rainier-nayeli.ngrok-free.app";
-
       // Minimum loading time 2 detik untuk menampilkan loading animation
       const [response] = await Promise.all([
-        fetch(`${API_BASE}/api/search/compare`, {
+        fetch("http://localhost:5000/api/search/compare", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -181,7 +179,7 @@ function SearchPage() {
                           {result.main_image && (
                             <div className="relative flex-shrink-0 overflow-hidden rounded-xl">
                               <img
-                                src={`https://nonsovereignly-rainier-nayeli.ngrok-free.app/api/image-proxy?url=${encodeURIComponent(
+                                src={`http://localhost:5000/api/image-proxy?url=${encodeURIComponent(
                                   result.main_image
                                 )}`}
                                 alt={result.title}
@@ -274,7 +272,7 @@ function SearchPage() {
                           {result.main_image && (
                             <div className="relative flex-shrink-0 overflow-hidden rounded-xl">
                               <img
-                                src={`https://nonsovereignly-rainier-nayeli.ngrok-free.app/api/image-proxy?url=${encodeURIComponent(
+                                src={`http://localhost:5000/api/image-proxy?url=${encodeURIComponent(
                                   result.main_image
                                 )}`}
                                 alt={result.title}

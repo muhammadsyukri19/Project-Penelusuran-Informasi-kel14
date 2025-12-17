@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
+import LoadingScreen from "../components/LoadingScreen";
 
 function ComparePage() {
   const [searchParams] = useSearchParams();
@@ -25,13 +26,17 @@ function ComparePage() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:5000/api/search/compare", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query: searchQuery }),
-      });
+      // Minimum loading time 2 detik untuk menampilkan loading animation
+      const [response] = await Promise.all([
+        fetch("http://localhost:5000/api/search/compare", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ query: searchQuery }),
+        }),
+        new Promise((resolve) => setTimeout(resolve, 2000)),
+      ]);
 
       if (!response.ok) {
         throw new Error("Failed to fetch results");
@@ -92,7 +97,7 @@ function ComparePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/45 to-white/40" />
       </div>
 
-      {/* Header */}
+      {/* Header with Logo and Search Bar */}
       <header className="sticky top-0 z-30 bg-grey/10 backdrop-blur-lg border-b border-slate-300 shadow-sm">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center gap-6">
@@ -125,7 +130,7 @@ function ComparePage() {
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-primary to-accent text-white px-4 py-2 rounded-lg hover:shadow-lg hover:shadow-primary/50 transition-all duration-300"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-primary to-accent text-white px-4 py-2 rounded-2xl hover:shadow-lg hover:shadow-primary/50 transition-all duration-300"
                 >
                   Cari
                 </button>
@@ -145,20 +150,24 @@ function ComparePage() {
       {/* Main Content */}
       <main className="relative z-10 container mx-auto px-6 py-8">
         {/* Page Title */}
-        <div className="mb-8 animate-fadeIn">
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">
+        <div className="mb-8 animate-fadeIn rounded-2xl p-6">
+          <h1 className="text-4xl font-bold text-slate-900 mb-3">
             Perbandingan Detail Algoritma
           </h1>
-          <p className="text-slate-600">
-            Query: <span className="font-semibold text-primary">"{query}"</span>
+          <p className="text-slate-700 text-lg">
+            Query:{" "}
+            <span className="font-bold text-primary bg-primary/10 px-3 py-1 rounded-lg">
+              "{query}"
+            </span>
           </p>
         </div>
 
         {/* Loading State */}
         {loading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
-          </div>
+          <LoadingScreen
+            message="Memuat Data Perbandingan"
+            subtitle="Menganalisis algoritma TF-IDF dan BM25..."
+          />
         )}
 
         {/* Error State */}
@@ -175,9 +184,9 @@ function ComparePage() {
             {/* Algorithm Configuration Cards */}
             <div className="grid md:grid-cols-2 gap-6">
               {/* TF-IDF Config */}
-              <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-slate-300 p-6">
+              <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 p-6 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 group">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/50 group-hover:shadow-xl group-hover:shadow-blue-500/60 transition-all duration-500">
                     TF
                   </div>
                   <div>
@@ -209,22 +218,25 @@ function ComparePage() {
                         "N/A"}
                     </span>
                   </div>
-                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                  <div className="mt-4 p-4 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl border border-blue-200 backdrop-blur-sm">
                     <p className="text-xs text-slate-700 leading-relaxed">
-                      <strong>Formula:</strong> TF-IDF = TF × IDF
+                      <strong className="text-blue-700">Formula:</strong> TF-IDF
+                      = TF × IDF
                       <br />
-                      Menghitung frekuensi term dalam dokumen dan
-                      mempertimbangkan seberapa umum term tersebut di seluruh
-                      dokumen.
+                      <span className="text-slate-600">
+                        Menghitung frekuensi term dalam dokumen dan
+                        mempertimbangkan seberapa umum term tersebut di seluruh
+                        dokumen.
+                      </span>
                     </p>
                   </div>
                 </div>
               </div>
 
               {/* BM25 Config */}
-              <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-slate-300 p-6">
+              <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 p-6 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 group">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-primary/50 group-hover:shadow-xl group-hover:shadow-primary/60 transition-all duration-500">
                     BM
                   </div>
                   <div>
@@ -253,12 +265,15 @@ function ComparePage() {
                         "N/A"}
                     </span>
                   </div>
-                  <div className="mt-4 p-3 bg-green-50 rounded-lg">
+                  <div className="mt-4 p-4 bg-gradient-to-br from-green-50 to-green-100/50 rounded-xl border border-green-200 backdrop-blur-sm">
                     <p className="text-xs text-slate-700 leading-relaxed">
-                      <strong>Formula:</strong> BM25 dengan k1=1.5, b=0.75
+                      <strong className="text-primary">Formula:</strong> BM25
+                      dengan k1=1.5, b=0.75
                       <br />
-                      Algoritma probabilistik yang mengatasi saturasi term
-                      frequency dan normalisasi panjang dokumen.
+                      <span className="text-slate-600">
+                        Algoritma probabilistik yang mengatasi saturasi term
+                        frequency dan normalisasi panjang dokumen.
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -267,8 +282,8 @@ function ComparePage() {
 
             {/* Evaluation Metrics Section */}
             {evaluationData && (
-              <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-slate-300 overflow-hidden">
-                <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-4">
+              <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 overflow-hidden hover:shadow-2xl transition-all duration-500 animate-fadeInUp">
+                <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-5">
                   <h3 className="text-xl font-bold">
                     Evaluasi Kinerja Algoritma
                   </h3>
@@ -281,7 +296,7 @@ function ComparePage() {
                 <div className="p-6">
                   {/* MAP Comparison */}
                   <div className="grid md:grid-cols-2 gap-6 mb-6">
-                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100/80 backdrop-blur-sm rounded-2xl p-6 border border-blue-200 hover:shadow-lg hover:scale-[1.02] transition-all duration-500">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="text-lg font-bold text-slate-800">
                           TF-IDF
@@ -338,7 +353,7 @@ function ComparePage() {
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+                    <div className="bg-gradient-to-br from-green-50 to-green-100/80 backdrop-blur-sm rounded-2xl p-6 border border-green-200 hover:shadow-lg hover:scale-[1.02] transition-all duration-500">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="text-lg font-bold text-slate-800">
                           BM25
@@ -396,7 +411,7 @@ function ComparePage() {
 
                   {/* Winner Badge */}
                   {evaluationData.comparison && (
-                    <div className="bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 rounded-xl p-4">
+                    <div className="bg-gradient-to-r from-amber-50 to-amber-100 border-2 border-amber-300 rounded-2xl p-5 shadow-lg hover:shadow-xl transition-all duration-300">
                       <div className="flex items-center justify-center gap-3">
                         <svg
                           className="w-6 h-6 text-amber-600"
@@ -421,7 +436,7 @@ function ComparePage() {
                   )}
 
                   {/* Metrics Explanation */}
-                  <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                  <div className="mt-6 p-5 bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-xl border border-slate-200 backdrop-blur-sm">
                     <h5 className="text-sm font-bold text-slate-800 mb-2">
                       Penjelasan Metrik:
                     </h5>
@@ -449,14 +464,14 @@ function ComparePage() {
             )}
 
             {/* Full Results Comparison Table */}
-            <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-slate-300 overflow-hidden">
-              <div className="bg-gradient-to-r from-slate-700 to-slate-800 text-white px-6 py-4">
+            <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200 overflow-hidden hover:shadow-2xl transition-all duration-500 animate-fadeInUp">
+              <div className="bg-gradient-to-r from-slate-800 to-slate-900 text-white px-6 py-5">
                 <h3 className="text-xl font-bold">Semua Hasil Pencarian</h3>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-slate-100 border-b border-slate-300">
+                  <thead className="bg-slate-50/80 backdrop-blur-sm border-b-2 border-slate-200">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 uppercase">
                         Rank
@@ -488,7 +503,7 @@ function ComparePage() {
                       return (
                         <tr
                           key={index}
-                          className="hover:bg-slate-50 transition-colors"
+                          className="hover:bg-slate-50/80 transition-all duration-300 hover:shadow-sm"
                         >
                           <td className="px-6 py-4 text-sm font-semibold text-slate-700">
                             #{index + 1}
@@ -563,11 +578,11 @@ function ComparePage() {
       {/* Document Detail Modal */}
       {selectedDoc && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fadeIn"
           onClick={() => setSelectedDoc(null)}
         >
           <div
-            className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden animate-fadeInUp"
+            className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden animate-scaleIn border border-slate-200"
             onClick={(e) => e.stopPropagation()}
           >
             <div
@@ -584,7 +599,7 @@ function ComparePage() {
                 </div>
                 <button
                   onClick={() => setSelectedDoc(null)}
-                  className="w-8 h-8 flex items-center justify-center hover:bg-white/20 rounded-lg transition-colors"
+                  className="w-8 h-8 flex items-center justify-center hover:bg-white/20 rounded-lg transition-all duration-300 hover:rotate-90"
                 >
                   <svg
                     className="w-5 h-5"
@@ -605,13 +620,13 @@ function ComparePage() {
               </h4>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="p-3 bg-slate-50 rounded-lg">
+                <div className="p-4 bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-xl border border-slate-200">
                   <p className="text-xs text-slate-600 mb-1">Sumber</p>
                   <p className="text-sm font-semibold text-slate-800">
                     {selectedDoc.source}
                   </p>
                 </div>
-                <div className="p-3 bg-slate-50 rounded-lg">
+                <div className="p-4 bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-xl border border-slate-200">
                   <p className="text-xs text-slate-600 mb-1">Skor Relevansi</p>
                   <p
                     className={`text-sm font-semibold ${
@@ -639,11 +654,11 @@ function ComparePage() {
                   href={selectedDoc.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-2 px-4 py-2 ${
+                  className={`inline-flex items-center gap-2 px-5 py-3 ${
                     selectedDoc.algorithm === "TF-IDF"
-                      ? "bg-blue-600 hover:bg-blue-700"
-                      : "bg-primary hover:bg-primary/90"
-                  } text-white rounded-lg transition-colors`}
+                      ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:shadow-lg hover:shadow-blue-500/50"
+                      : "bg-gradient-to-r from-primary to-accent hover:shadow-lg hover:shadow-primary/50"
+                  } text-white rounded-xl transition-all duration-300 hover:scale-105 font-semibold`}
                 >
                   Baca Artikel Lengkap
                   <svg

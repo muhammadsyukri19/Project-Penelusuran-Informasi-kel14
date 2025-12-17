@@ -1,6 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 function NotFoundPage() {
+  const location = useLocation();
+
+  useEffect(() => {
+    console.error(
+      "404 Error: User attempted to access non-existent route:",
+      location.pathname
+    );
+  }, [location.pathname]);
+
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-100">
       {/* Background with light overlay */}
@@ -27,15 +37,26 @@ function NotFoundPage() {
       {/* 404 Content */}
       <div className="relative z-10 text-center px-6 animate-fadeInUp">
         <div className="mb-8">
-          <h1 className="text-9xl font-bold text-slate-800 mb-4">404</h1>
+          <h1
+            className="text-9xl font-bold text-slate-800 mb-4"
+            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+          >
+            404
+          </h1>
           <div className="w-32 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-6"></div>
         </div>
 
-        <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+        <h2
+          className="text-3xl md:text-4xl font-bold text-slate-800 mb-4"
+          style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+        >
           Halaman Tidak Ditemukan
         </h2>
 
-        <p className="text-lg text-slate-600 mb-8 max-w-md mx-auto">
+        <p
+          className="text-lg text-slate-600 mb-8 max-w-md mx-auto"
+          style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}
+        >
           Maaf, halaman yang Anda cari tidak ditemukan atau telah dipindahkan.
         </p>
 
@@ -75,28 +96,34 @@ function NotFoundPage() {
 
         {/* Additional Help */}
         <div className="mt-12 p-6 bg-white/70 backdrop-blur-md rounded-2xl border border-slate-300 max-w-lg mx-auto">
-          <h3 className="text-lg font-semibold text-slate-800 mb-3">
+          <h3
+            className="text-lg font-semibold text-slate-800 mb-3"
+            style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}
+          >
             Butuh Bantuan?
           </h3>
-          <p className="text-sm text-slate-600 mb-4">
+          <p
+            className="text-sm text-slate-600 mb-4"
+            style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}
+          >
             Coba gunakan pencarian untuk menemukan informasi sepak bola yang
             Anda butuhkan:
           </p>
           <div className="flex gap-2">
             <Link
-              to="/?q=Timnas%20Indonesia"
+              to="/search?q=Timnas%20Indonesia"
               className="px-4 py-2 bg-white border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50 transition-colors"
             >
               Timnas Indonesia
             </Link>
             <Link
-              to="/?q=Liga%20Champions"
+              to="/search?q=Liga%20Champions"
               className="px-4 py-2 bg-white border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50 transition-colors"
             >
               Liga Champions
             </Link>
             <Link
-              to="/?q=Piala%20Dunia"
+              to="/search?q=Piala%20Dunia"
               className="px-4 py-2 bg-white border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50 transition-colors"
             >
               Piala Dunia
