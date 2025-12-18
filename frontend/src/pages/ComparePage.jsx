@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen";
 
+const API_BASE = import.meta.env.VITE_API_URL;   // << hanya SATU kali di sini
+
 function ComparePage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -26,20 +28,14 @@ function ComparePage() {
     setError(null);
 
     try {
-      // Minimum loading time 2 detik untuk menampilkan loading animation
-const API_BASE = import.meta.env.VITE_API_URL; // pastikan ada di atas dalam component
-
-  const [response] = await Promise.all([
-    fetch(`${API_BASE}/api/search/compare`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query: searchQuery }),
-    }),
-    new Promise((resolve) => setTimeout(resolve, 2000)),
-]);
-
+      const [response] = await Promise.all([
+        fetch(`${API_BASE}/api/search/compare`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: searchQuery }),
+        }),
+        new Promise((resolve) => setTimeout(resolve, 2000)),
+      ]);
 
       if (!response.ok) {
         throw new Error("Failed to fetch results");
@@ -54,29 +50,23 @@ const API_BASE = import.meta.env.VITE_API_URL; // pastikan ada di atas dalam com
     }
   };
 
-const API_BASE = import.meta.env.VITE_API_URL; // kalau belum ada di file ini, tambahkan di atas dalam component
+  const fetchEvaluation = async (searchQuery) => {
+    try {
+      const response = await fetch(`${API_BASE}/api/evaluate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: searchQuery, top_k: 10 }),
+      });
 
-const fetchEvaluation = async (searchQuery) => {
-  try {
-    const response = await fetch(`${API_BASE}/api/evaluate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: searchQuery,
-        top_k: 10,
-      }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setEvaluationData(data);
+      if (response.ok) {
+        const data = await response.json();
+        setEvaluationData(data);
+      }
+    } catch (err) {
+      console.error("Evaluation failed:", err);
     }
-  } catch (err) {
-    console.error("Evaluation failed:", err);
-  }
-};
+  };
+
 
   const handleSearch = (e) => {
     e.preventDefault();
